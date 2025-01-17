@@ -24,7 +24,7 @@ class ErrorBoundary extends Component {
       return <ErrorMessage />;
     }
 
-    return this.props.children; // считаем что это компонент, который был передан внутрь этого компонента ErrorBoundary
+    return this.props.children; // компонент, который был передан внутрь ErrorBoundary
   }
 }
 

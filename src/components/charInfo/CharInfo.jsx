@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 import './charInfo.scss';
@@ -8,79 +8,60 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton';
 
-class CharInfo extends Component {
-  state = {
-    char: null,
-    loading: false,
-    error: false,
+const CharInfo = props => {
+  const [char, setChar] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const marvelService = new MarvelService(); // объект созданный с помощью класса MarvelService
+
+  useEffect(() => {
+    updateCharInfo();
+  }, []);
+
+  useEffect(() => {
+    updateCharInfo();
+  }, [props.charId]);
+
+  const onCharLoaded = char => {
+    setChar(char);
+    setLoading(false);
   };
 
-  marvelService = new MarvelService();
-
-  componenDidMount() {
-    this.updateCharInfo();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.charId !== prevProps.charId) {
-      // эта проверка помогает избежать попадания в бесконечный цикл, а так же если пользователь начнет кликать по одному и тому же персонажу не будет происходить перерендер
-      this.updateCharInfo();
-    }
-  }
-
-  onCharLoaded = char => {
-    this.setState({
-      char,
-      loading: false,
-    });
+  const onCharLoading = () => {
+    setLoading(true);
+    setError(false);
   };
 
-  onCharLoading = () => {
-    this.setState({
-      loading: true,
-      error: false,
-    });
+  const onError = () => {
+    setError(true);
+    setLoading(false);
   };
 
-  onError = () => {
-    this.setState({
-      error: true,
-      loading: false,
-    });
-  };
-
-  updateCharInfo = () => {
-    const {charId} = this.props;
-
-    if (!charId) {
+  const updateCharInfo = () => {
+    if (!props.charId) {
       return;
     }
 
-    this.onCharLoading(); // здесь изначально нет загрузки т.к. стоит заглушка до нажатия на персонажа списка, при обновлении вызываем загрузку
-    this.marvelService.getCharacter(charId).then(this.onCharLoaded).catch(this.onError);
-
-    // this.foo.bar = 0;
+    onCharLoading(); // здесь изначально нет загрузки т.к. стоит заглушка до нажатия на персонажа списка, при обновлении вызываем загрузку
+    marvelService.getCharacter(props.charId).then(onCharLoaded).catch(onError);
   };
 
-  render() {
-    const {char, loading, error} = this.state;
+  // skeleton = если что-то из состояний есть то ничего не рендерим, если ничего нет то вставляем компонент скелетон
+  const skeleton = char || loading || error ? null : <Skeleton />;
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const content = !(loading || error || !char) ? <View char={char} /> : null;
 
-    // skeleton = если что-то из состояний есть то ничего не рендерим, если ничего нет то вставляем компонент скелетон
-    const skeleton = char || loading || error ? null : <Skeleton />;
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error || !char) ? <View char={char} /> : null;
-
-    return (
-      <div className="char__info">
-        {skeleton}
-        {errorMessage}
-        {spinner}
-        {content}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="char__info">
+      {skeleton}
+      {errorMessage}
+      {spinner}
+      {content}
+    </div>
+  );
+};
 
 const View = ({char}) => {
   const {name, description, thumbnail, homepage, wiki, comics} = char;
