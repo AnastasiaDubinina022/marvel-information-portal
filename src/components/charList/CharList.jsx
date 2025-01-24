@@ -3,35 +3,30 @@ import PropTypes from 'prop-types';
 
 import './charList.scss';
 
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const CharList = props => {
   const [charList, setCharList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  // const [loading, setLoading] = useState(true);  // эти состояния теперь контролируются из useHttp
+  // const [error, setError] = useState(false);
   const [newItemLoading, setNewItemLoading] = useState(false);
-  const [offset, setOffset] = useState(null);
+  const [offset, setOffset] = useState(210);
   const [charEnded, setCharEnded] = useState(false);
 
-  const marvelService = new MarvelService(); // объект, который конструируетсфя при помощи класса MarvelService
+  const {loading, error, getAllCharacters} = useMarvelService(); // объект, который конструируетсфя при помощи класса MarvelService
 
   useEffect(() => {
-    onRequest();
-  }, []); // 1 раз когда компонент был смонтирован вызываем onRequest (аналог componentDidMount)
+    onRequest(offset, true);
+  }, []); 
 
-  const onRequest = offset => {
-    onCharListLoading();
-    marvelService
-      .getAllCharacters(offset) // здесь если не передать аргуемент подставится null и метод возьмет оффсет по умолчанию в getAllCharacters
+  // добавлен второй аргумент initial - для определения первичной загрузки (чтобы далее решить проблему разницы в логике загрузки здесь и в useHttp и пропаданием всех персонажей при дозагрузке новых)
+  const onRequest = (offset, initial) => {
+    initial ? setNewItemLoading(false) : setNewItemLoading(true);
+    getAllCharacters(offset) // здесь если не передать аргуемент подставится null и метод возьмет оффсет по умолчанию в getAllCharacters
       .then(onCharListLoaded) // сюда приходит ответ с сервера с 9ю персонажами и подставляется аргументом в onCharListLoaded
-      .catch(onError);
-  };
-
-  // доп. метод, которы говорит о том что запустился запрос и что-то там грузится
-  const onCharListLoading = () => {
-    setNewItemLoading(true);
+      // .catch(onError);     // ошибки теперь обрабатываются в useHttp
   };
 
   // здесь аргумент ответ сервера с 9* новыми загруженными персонажами
@@ -42,15 +37,9 @@ const CharList = props => {
     }
 
     setCharList(charList => [...charList, ...newCharList]); // соединяем старый массив с персонажами с новым и пилим в стэйт
-    setLoading(false);
     setNewItemLoading(false);
     setOffset(offset => offset + 9);
     setCharEnded(ended);
-  };
-
-  const onError = () => {
-    setLoading(false);
-    setError(true);
   };
 
   const itemRefs = useRef([]); // создаем массив с рефами, он будет лежать в itemRefs.current
@@ -107,18 +96,18 @@ const CharList = props => {
 
   const items = renderItems(charList);
 
-  const spinner = loading ? <Spinner /> : null;
+  const spinner = loading && !newItemLoading ? <Spinner /> : null;  // если идет первая загрузка, но не дозагрузка новых чаровб то показ. спиннер
   const errorMessage = error ? <ErrorMessage /> : null;
-  const content = !(loading || error) ? items : null;
+  // const content = !(loading || error) ? items : null;  // в отличие от классов здесь это условие не нужно, т.к. при каждом перерендере все переменные пересоздаются и с этой строкой все персы пропадают в момент дозагрузки  тк на какой-то момент сюда помещается null
 
   return (
     <div className="char__list">
       {spinner}
       {errorMessage}
-      {content}
+      {items}
       <button
         className="button button__main button__long"
-        disabled={newItemLoading} //  если newItemLoading true кпонка блокируется
+        disabled={newItemLoading} //  если newItemLoading true кнопка блокируется
         style={{display: charEnded ? 'none' : 'block'}} // если персонажи закончились скрываем кнопку
         onClick={() => onRequest(offset)}>
         <div className="inner">load more</div>

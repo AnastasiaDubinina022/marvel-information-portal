@@ -3,17 +3,15 @@ import PropTypes from 'prop-types';
 
 import './charInfo.scss';
 
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton';
 
 const CharInfo = props => {
   const [char, setChar] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
 
-  const marvelService = new MarvelService(); // объект созданный с помощью класса MarvelService
+  const {loading, error, getCharacter} = useMarvelService(); 
 
   useEffect(() => {
     updateCharInfo();
@@ -25,17 +23,6 @@ const CharInfo = props => {
 
   const onCharLoaded = char => {
     setChar(char);
-    setLoading(false);
-  };
-
-  const onCharLoading = () => {
-    setLoading(true);
-    setError(false);
-  };
-
-  const onError = () => {
-    setError(true);
-    setLoading(false);
   };
 
   const updateCharInfo = () => {
@@ -43,8 +30,8 @@ const CharInfo = props => {
       return;
     }
 
-    onCharLoading(); // здесь изначально нет загрузки т.к. стоит заглушка до нажатия на персонажа списка, при обновлении вызываем загрузку
-    marvelService.getCharacter(props.charId).then(onCharLoaded).catch(onError);
+    getCharacter(props.charId)
+      .then(onCharLoaded);
   };
 
   // skeleton = если что-то из состояний есть то ничего не рендерим, если ничего нет то вставляем компонент скелетон

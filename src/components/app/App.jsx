@@ -27,7 +27,6 @@ const App = () => {
             <CharList onCharSelected={onCharSelected} />
           </ErrorBoundary>
           <ErrorBoundary>
-            {/** проблемный компонент который ломается помещаем в ErrorBoundary */}
             <CharInfo charId={selectedChar} />{' '}
           </ErrorBoundary>
         </div>

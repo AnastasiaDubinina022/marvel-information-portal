@@ -1,36 +1,29 @@
-// здесь обычный класс с методами на чистом js
-class MarvelService {
-  _apiBase = 'https://gateway.marvel.com:443/v1/public/'; // _ говорит другим программистам что эти данные нельзя менять
-  _apiKey = 'apikey=48016fbc64705610f2040226da4655f7';
-  _baseOffSet = 210;
+import { useHttp } from "../hooks/http.hook";
 
-  getResourse = async url => {
-    let result = await fetch(url);
+const useMarvelService = () => {
+  const {loading, error, request} = useHttp();  // вытаскиваем сущности функционала из объекта useHttp
 
-    if (!result.ok) {
-      throw new Error(`Could not fetch ${url}, status: ${result.status}`);
-    }
+  const _apiBase = 'https://gateway.marvel.com:443/v1/public/'; // _ говорит другим программистам что эти данные нельзя менять
+  const _apiKey = 'apikey=48016fbc64705610f2040226da4655f7';
+  const _baseOffSet = 210;
 
-    return await result.json();
-  };
-
-  // делаем функцию асинхронной, поскольку для создания const result нужно дождаться ответа в getResourse
-  getAllCharacters = async (offset = this._baseOffSet) => {
-    const result = await this.getResourse(
-      `${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`
+  // делаем функцию асинхронной, поскольку для создания const result нужно дождаться ответа запроса
+  const getAllCharacters = async (offset = _baseOffSet) => {
+    const result = await request(
+      `${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`
     ); // сюда приходит ответ от сервера с массивом больших объектов персонажей
 
-    return result.data.results.map(char => this._transformCharacter(char)); // получаем массив уже трансформированных объектов
+    return result.data.results.map(char => _transformCharacter(char)); // получаем массив уже трансформированных объектов
   };
 
-  getCharacter = async id => {
-    const result = await this.getResourse(`${this._apiBase}characters/${id}?${this._apiKey}`); // сюда помещаем ответ от сервера с большим объектом данных
+  const getCharacter = async id => {
+    const result = await request(`${_apiBase}characters/${id}?${_apiKey}`); // сюда помещаем ответ от сервера с большим объектом данных
 
     // ретерним уже трансформированные, только нужные нам данные
-    return this._transformCharacter(result.data.results[0]); // (объект персонажа)
+    return _transformCharacter(result.data.results[0]); // (объект персонажа)
   };
 
-  _transformCharacter = char => {
+  const _transformCharacter = char => {
     // трансформация данных, превращает большой объект полученный с сервера в небольшой объект только с нужными нам данными
     return {
       name: char.name,
@@ -44,13 +37,11 @@ class MarvelService {
       comics: char.comics.items,
     };
   };
+
+  // поскольку это кастомный хук из него мы можем вернуть необходимые сущности для дальнейшего использования в других компонентах
+  return {loading, error, getAllCharacters, getCharacter};
 }
 
-export default MarvelService;
+export default useMarvelService;
 
-// using example
-// marvelService.getCharacter(1011052).then(result => console.log(result));    // вызываем метод и обрабатываем результат
-// const marvelService = new MarvelService(); // создаем экземпляр класса
-// marvelService
-// .getAllCharacters()
-// .then(result => result.data.results.forEach(item => console.log(item.name))); // получаем имена персонаже из массива данных - можем получить любые конкретные данные и что-то с ними сделать
+ 

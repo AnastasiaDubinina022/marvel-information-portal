@@ -3,51 +3,46 @@ import {useState, useEffect} from 'react';
 import './randomChar.scss';
 
 import mjolnir from '../../resources/img/mjolnir.png';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const RandomChar = () => {
   const [char, setChar] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
 
-  const marvelService = new MarvelService();
+  const {loading, error, getCharacter} = useMarvelService();  // вытаскиваем нужные сущности из вызова хука useMarvelService
 
   useEffect(() => {
-    // this.timerId = setInterval(this.updateChar, 3000);
     updateChar();
+    const timerId = setInterval(updateChar, 30000);
+
+    return () => {
+      clearInterval(timerId);
+    }
   }, []);
 
-  // componentWillUnmount() {
-  //   clearInterval(this.timerId);
-  // }
-
-  const onCharLoading = () => {
-    setLoading(true);
-    setError(false);
-    updateChar();
-  };
-
-  const onCharLoaded = char => {
+   const onCharLoaded = char => {
     setChar(char);
-    setLoading(false);
+    // setLoading(false);  // состояния загрузки и ошибки теперь контролируются из хука useHttp
   };
 
-  const onError = () => {
-    setLoading(false);
-    setError(true);
-  };
+  // методы onCharLoading и onError больше не нужны, т.к. состояния загрузки и ошибки теперь контролируются из хука useHttp
+  // const onCharLoading = () => {
+  //   setLoading(true);  
+  //   setError(false);
+  //   updateChar();
+  // }; 
+
+  // const onError = () => {
+  //   setLoading(false);
+  //   setError(true);
+  // };
 
   const updateChar = () => {
     const id = Math.floor(Math.random() * (1011500 - 1010900) + 1010900); // диапазон айдишников в базе и выбор случайного
-    marvelService
-      .getCharacter(id) // из функции getCharacter мы получаем объект с уже трансформированными данными и устанавливаем его в стэйт
-      .then(onCharLoaded) // в .then приходит объект и автоматически подставляется аргументом в указанную ссылочную функцию
-      .catch(onError);
-    // можем так-же получить массив объектов с трансформированными данными персонажей
-    // .getAllCharacters()
-    // .then(result => console.log(result))
+    getCharacter(id)  // из функции getCharacter мы получаем объект с уже трансформированными данными и устанавливаем его в стэйт
+      .then(onCharLoaded)  // в .then приходит объект и автоматически подставляется аргументом в указанную ссылочную функцию
+      // .catch(onError);  // блок catch теперь здесь не нужен, т.к. ошибки обрабатываются в хуке useHttp
   };
 
   const errorMessage = error ? <ErrorMessage /> : null; // выносим сюда сложную логику условного рендеринга
@@ -68,7 +63,7 @@ const RandomChar = () => {
         <p className="randomchar__title">Or choose another one</p>
         <button
           className="button button__main"
-          onClick={onCharLoading}>
+          onClick={updateChar}>
           <div className="inner">try it</div>{' '}
         </button>
         <img
