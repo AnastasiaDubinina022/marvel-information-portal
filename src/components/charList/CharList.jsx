@@ -15,7 +15,7 @@ const CharList = props => {
   const [offset, setOffset] = useState(210);
   const [charEnded, setCharEnded] = useState(false);
 
-  const {loading, error, getAllCharacters} = useMarvelService(); // объект, который конструируетсфя при помощи класса MarvelService
+  const {loading, error, getAllCharacters} = useMarvelService(); // вытаскиваем сущности из объекта вызова useMarvelService
 
   useEffect(() => {
     onRequest(offset, true);
