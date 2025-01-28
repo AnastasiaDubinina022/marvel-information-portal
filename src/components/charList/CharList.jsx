@@ -32,6 +32,7 @@ const CharList = props => {
   // здесь аргумент ответ сервера с 9* новыми загруженными персонажами
   const onCharListLoaded = newCharList => {
     let ended = false;
+    
     if (newCharList.length < 9) {
       ended = true;
     }

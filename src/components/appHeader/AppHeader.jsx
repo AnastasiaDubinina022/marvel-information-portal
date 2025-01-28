@@ -1,6 +1,6 @@
 import './appHeader.scss';
 
-const AppHeader = () => {
+const AppHeader = (props) => {
   return (
     <header className="app__header">
       <h1 className="app__title">
@@ -10,11 +10,11 @@ const AppHeader = () => {
       </h1>
       <nav className="app__menu">
         <ul>
-          <li>
+          <li onClick={() => props.onPageSelected('characters')}>
             <a href="#">Characters</a>
           </li>
           /
-          <li>
+          <li onClick={() => props.onPageSelected('comics')}>
             <a href="#">Comics</a>
           </li>
         </ul>

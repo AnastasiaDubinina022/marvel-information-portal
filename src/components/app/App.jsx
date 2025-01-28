@@ -11,16 +11,23 @@ import decoration from '../../resources/img/vision.png';
 
 const App = () => {
   const [selectedChar, setChar] = useState(null);
+  const [page, setPage] = useState('characters');
 
   const onCharSelected = id => {
     setChar(id);
   };
 
+  const onPageSelected = (page) => {
+    setPage(page);
+  }
+
   return (
     <div className="app">
-      <AppHeader />
+      <AppHeader onPageSelected={onPageSelected}/>
       <main>
-        {/* <ErrorBoundary>
+        {page === 'characters' && 
+          <>
+          <ErrorBoundary>
           <RandomChar />
         </ErrorBoundary>
         <div className="char__content">
@@ -35,10 +42,17 @@ const App = () => {
           className="bg-decoration"
           src={decoration}
           alt="vision"
-        /> */}
-        <ErrorBoundary>
+        /></>
+        }
+        
+        {page === 'comics' && 
+          <>
+          <ErrorBoundary>
           <ComicsList />
-        </ErrorBoundary>
+          </ErrorBoundary>
+          </>
+        }
+        
       </main>
     </div>
   );
