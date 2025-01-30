@@ -1,6 +1,8 @@
 import {useState} from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom/cjs/react-router-dom.min';
 
 import AppHeader from '../appHeader/AppHeader';
+import AppBanner from '../appBanner/AppBanner';
 import RandomChar from '../randomChar/RandomChar';
 import CharList from '../charList/CharList';
 import CharInfo from '../charInfo/CharInfo';
@@ -11,50 +13,44 @@ import decoration from '../../resources/img/vision.png';
 
 const App = () => {
   const [selectedChar, setChar] = useState(null);
-  const [page, setPage] = useState('characters');
 
   const onCharSelected = id => {
     setChar(id);
   };
 
-  const onPageSelected = (page) => {
-    setPage(page);
-  }
-
   return (
-    <div className="app">
-      <AppHeader onPageSelected={onPageSelected}/>
-      <main>
-        {page === 'characters' && 
-          <>
-          <ErrorBoundary>
-          <RandomChar />
-        </ErrorBoundary>
-        <div className="char__content">
-          <ErrorBoundary>
-            <CharList onCharSelected={onCharSelected} />
-          </ErrorBoundary>
-          <ErrorBoundary>
-            <CharInfo charId={selectedChar} />{' '}
-          </ErrorBoundary>
-        </div>
-        <img
-          className="bg-decoration"
-          src={decoration}
-          alt="vision"
-        /></>
-        }
-        
-        {page === 'comics' && 
-          <>
-          <ErrorBoundary>
-          <ComicsList />
-          </ErrorBoundary>
-          </>
-        }
-        
-      </main>
-    </div>
+    <Router>  
+      <div className="app">
+        <AppHeader/>
+        <main>
+          <Switch>
+            <Route exact path='/'>  
+              <ErrorBoundary>
+                <RandomChar />
+              </ErrorBoundary>
+              <div className="char__content">
+                <ErrorBoundary>
+                  <CharList onCharSelected={onCharSelected} />
+                </ErrorBoundary>
+                <ErrorBoundary>
+                  <CharInfo charId={selectedChar} />{' '}
+                </ErrorBoundary>
+              </div>
+              <img
+                className="bg-decoration"
+                src={decoration}
+                alt="vision"
+              />
+            </Route>
+          
+            <Route exact path='/comics'>
+              <AppBanner/>
+              <ComicsList />
+            </Route>
+          </Switch>
+        </main>
+      </div>
+    </Router>
   );
 };
 
