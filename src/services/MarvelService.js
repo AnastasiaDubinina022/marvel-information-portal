@@ -1,7 +1,7 @@
-import { useHttp } from "../hooks/http.hook";
+import {useHttp} from '../hooks/http.hook';
 
 const useMarvelService = () => {
-  const {loading, error, request} = useHttp();  // вытаскиваем сущности функционала из объекта useHttp
+  const {loading, error, request} = useHttp(); // вытаскиваем сущности функционала из объекта useHttp
 
   const _apiBase = 'https://gateway.marvel.com:443/v1/public/'; // _ говорит другим программистам что эти данные нельзя менять
   const _apiKey = 'apikey=48016fbc64705610f2040226da4655f7';
@@ -9,9 +9,7 @@ const useMarvelService = () => {
 
   // делаем функцию асинхронной, поскольку для создания const result нужно дождаться ответа запроса
   const getAllCharacters = async (offset = _baseOffSet) => {
-    const result = await request(
-      `${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`
-    ); // сюда приходит ответ от сервера с массивом больших объектов персонажей
+    const result = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`); // сюда приходит ответ от сервера с массивом больших объектов персонажей
 
     return result.data.results.map(char => _transformCharacter(char)); // получаем массив уже трансформированных объектов
   };
@@ -39,25 +37,25 @@ const useMarvelService = () => {
   };
 
   const getAllComics = async (offset = 0) => {
-    const result = await request(`${_apiBase}comics?orderBy=issueNumber&limit=8&offset=${offset}&${_apiKey}`);
+    const result = await request(
+      `${_apiBase}comics?orderBy=issueNumber&limit=8&offset=${offset}&${_apiKey}`
+    );
 
     return result.data.results.map(comics => _transformComics(comics));
-  }
+  };
 
-  const _transformComics = (comics) => {
+  const _transformComics = comics => {
     return {
       title: comics.title,
       price: comics.prices[0].price ? `${comics.prices[0].price}$` : 'Not available',
       id: comics.id,
       thumbnail: comics.thumbnail.path + '.' + comics.thumbnail.extension,
-      url: comics.urls[0].url
-    }
-  }
+      url: comics.urls[0].url,
+    };
+  };
 
   // поскольку это кастомный хук из него мы можем вернуть необходимые сущности для дальнейшего использования в других компонентах
   return {loading, error, getAllCharacters, getCharacter, getAllComics};
-}
+};
 
 export default useMarvelService;
-
- 

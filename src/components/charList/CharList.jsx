@@ -19,20 +19,20 @@ const CharList = props => {
 
   useEffect(() => {
     onRequest(offset, true);
-  }, []); 
+  }, []);
 
   // добавлен второй аргумент initial - для определения первичной загрузки (чтобы далее решить проблему разницы в логике загрузки здесь и в useHttp и пропаданием всех персонажей при дозагрузке новых)
   const onRequest = (offset, initial) => {
     initial ? setNewItemLoading(false) : setNewItemLoading(true);
     getAllCharacters(offset) // здесь если не передать аргуемент подставится null и метод возьмет оффсет по умолчанию в getAllCharacters
-      .then(onCharListLoaded) // сюда приходит ответ с сервера с 9ю персонажами и подставляется аргументом в onCharListLoaded
-      // .catch(onError);     // ошибки теперь обрабатываются в useHttp
+      .then(onCharListLoaded); // сюда приходит ответ с сервера с 9ю персонажами и подставляется аргументом в onCharListLoaded
+    // .catch(onError);     // ошибки теперь обрабатываются в useHttp
   };
 
   // здесь аргумент ответ сервера с 9* новыми загруженными персонажами
   const onCharListLoaded = newCharList => {
     let ended = false;
-    
+
     if (newCharList.length < 9) {
       ended = true;
     }
@@ -97,7 +97,7 @@ const CharList = props => {
 
   const items = renderItems(charList);
 
-  const spinner = loading && !newItemLoading ? <Spinner /> : null;  // если идет первая загрузка, но не дозагрузка новых чаровб то показ. спиннер
+  const spinner = loading && !newItemLoading ? <Spinner /> : null; // если идет первая загрузка, но не дозагрузка новых чаровб то показ. спиннер
   const errorMessage = error ? <ErrorMessage /> : null;
   // const content = !(loading || error) ? items : null;  // в отличие от классов здесь это условие не нужно, т.к. при каждом перерендере все переменные пересоздаются и с этой строкой все персы пропадают в момент дозагрузки  тк на какой-то момент сюда помещается null
 

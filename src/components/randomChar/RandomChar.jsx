@@ -10,7 +10,7 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 const RandomChar = () => {
   const [char, setChar] = useState({});
 
-  const {loading, error, getCharacter} = useMarvelService();  // вытаскиваем нужные сущности из вызова хука useMarvelService
+  const {loading, error, getCharacter} = useMarvelService(); // вытаскиваем нужные сущности из вызова хука useMarvelService
 
   useEffect(() => {
     updateChar();
@@ -18,20 +18,20 @@ const RandomChar = () => {
 
     return () => {
       clearInterval(timerId);
-    }
+    };
   }, []);
 
-   const onCharLoaded = char => {
+  const onCharLoaded = char => {
     setChar(char);
     // setLoading(false);  // состояния загрузки и ошибки теперь контролируются из хука useHttp
   };
 
   // методы onCharLoading и onError больше не нужны, т.к. состояния загрузки и ошибки теперь контролируются из хука useHttp
   // const onCharLoading = () => {
-  //   setLoading(true);  
+  //   setLoading(true);
   //   setError(false);
   //   updateChar();
-  // }; 
+  // };
 
   // const onError = () => {
   //   setLoading(false);
@@ -40,9 +40,9 @@ const RandomChar = () => {
 
   const updateChar = () => {
     const id = Math.floor(Math.random() * (1011500 - 1010900) + 1010900); // диапазон айдишников в базе и выбор случайного
-    getCharacter(id)  // из функции getCharacter мы получаем объект с уже трансформированными данными и устанавливаем его в стэйт
-      .then(onCharLoaded)  // в .then приходит объект и автоматически подставляется аргументом в указанную ссылочную функцию
-      // .catch(onError);  // блок catch теперь здесь не нужен, т.к. ошибки обрабатываются в хуке useHttp
+    getCharacter(id) // из функции getCharacter мы получаем объект с уже трансформированными данными и устанавливаем его в стэйт
+      .then(onCharLoaded); // в .then приходит объект и автоматически подставляется аргументом в указанную ссылочную функцию
+    // .catch(onError);  // блок catch теперь здесь не нужен, т.к. ошибки обрабатываются в хуке useHttp
   };
 
   const errorMessage = error ? <ErrorMessage /> : null; // выносим сюда сложную логику условного рендеринга

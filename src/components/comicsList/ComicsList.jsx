@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 
 import './comicsList.scss';
 
@@ -20,11 +20,10 @@ const ComicsList = () => {
 
   const onRequest = (offset, initial) => {
     initial ? setNewItemLoading(false) : setNewItemLoading(true);
-    getAllComics(offset)
-    .then(onComicsListLoaded);
-  }
+    getAllComics(offset).then(onComicsListLoaded);
+  };
 
-  const onComicsListLoaded = (newComicsList) => {
+  const onComicsListLoaded = newComicsList => {
     let ended = false;
 
     if (newComicsList.length < 8) {
@@ -35,14 +34,14 @@ const ComicsList = () => {
     setNewItemLoading(false);
     setOffset(offset => offset + 8);
     setComicsEnded(ended);
-  }
+  };
 
   function renderItems(arr) {
-    const items = arr.map((item,  i) => {
-
+    const items = arr.map((item, i) => {
       return (
-        <li className="comics__item"
-            key={i}>
+        <li
+          className="comics__item"
+          key={i}>
           <a href={item.url}>
             <img
               src={item.thumbnail}
@@ -53,27 +52,27 @@ const ComicsList = () => {
             <div className="comics__item-price">{item.price}</div>
           </a>
         </li>
-      )
-    })
+      );
+    });
 
-    return <ul className="comics__grid">{items}</ul>
+    return <ul className="comics__grid">{items}</ul>;
   }
 
   const items = renderItems(comicsList);
-  const spinner = loading && !newItemLoading ? <Spinner/> : null; 
-  const errorMessage = error ? <ErrorMessage/> : null;
-  
+  const spinner = loading && !newItemLoading ? <Spinner /> : null;
+  const errorMessage = error ? <ErrorMessage /> : null;
+
   return (
     <div className="comics__list">
       {spinner}
-        {errorMessage}
-        {items}
-      <button 
+      {errorMessage}
+      {items}
+      <button
         className="button button__main button__long"
-        disabled={newItemLoading}  //  если newItemLoading true кнопка блокируется
-        style={{display: comicsEnded ? 'none' : 'block'}}  // если комиксы закончились скрываем кнопку
-        onClick={() => onRequest(offset)}  // колбэк обязателен, иначе бесконечный цикл запросов руинит приложение (запросы отправляются до того как компонент смонтирован)
-        >  
+        disabled={newItemLoading} //  если newItemLoading true кнопка блокируется
+        style={{display: comicsEnded ? 'none' : 'block'}} // если комиксы закончились скрываем кнопку
+        onClick={() => onRequest(offset)} // колбэк обязателен, иначе бесконечный цикл запросов руинит приложение (запросы отправляются до того как компонент смонтирован)
+      >
         <div className="inner">load more</div>
       </button>
     </div>

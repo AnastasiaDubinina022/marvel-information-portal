@@ -11,7 +11,7 @@ import Skeleton from '../skeleton/Skeleton';
 const CharInfo = props => {
   const [char, setChar] = useState(null);
 
-  const {loading, error, getCharacter} = useMarvelService(); 
+  const {loading, error, getCharacter} = useMarvelService();
 
   useEffect(() => {
     updateCharInfo();
@@ -30,8 +30,7 @@ const CharInfo = props => {
       return;
     }
 
-    getCharacter(props.charId)
-      .then(onCharLoaded);
+    getCharacter(props.charId).then(onCharLoaded);
   };
 
   // skeleton = если что-то из состояний есть то ничего не рендерим, если ничего нет то вставляем компонент скелетон
