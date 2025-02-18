@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom';
 
 import './comicsList.scss';
 
@@ -42,7 +43,9 @@ const ComicsList = () => {
         <li
           className="comics__item"
           key={i}>
-          <a href={item.url}>
+          <Link to={`/comics/${item.id}`}>
+            {' '}
+            {/** динамическое формирование пути */}
             <img
               src={item.thumbnail}
               alt={item.title}
@@ -50,7 +53,7 @@ const ComicsList = () => {
             />
             <div className="comics__item-name">{item.title}</div>
             <div className="comics__item-price">{item.price}</div>
-          </a>
+          </Link>
         </li>
       );
     });

@@ -1,6 +1,6 @@
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 
-import {MainPage, ComicsPage, Page404} from '../pages';
+import {MainPage, ComicsPage, Page404, SingleComicPage} from '../pages';
 import AppHeader from '../appHeader/AppHeader';
 
 const App = () => {
@@ -21,6 +21,10 @@ const App = () => {
             <Route
               path="*"
               element={<Page404 />}
+            />
+            <Route
+              path="/comics/:comicId" // динамическое формирование пути (:comicId - ключ называем как хотим)
+              element={<SingleComicPage />}
             />
           </Routes>
         </main>

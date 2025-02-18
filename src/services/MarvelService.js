@@ -44,18 +44,29 @@ const useMarvelService = () => {
     return result.data.results.map(comics => _transformComics(comics));
   };
 
+  const getComic = async id => {
+    const result = await request(`${_apiBase}comics/${id}?${_apiKey}`);
+
+    return _transformComics(result.data.results[0]);
+  };
+
   const _transformComics = comics => {
     return {
+      id: comics.id,
       title: comics.title,
       price: comics.prices[0].price ? `${comics.prices[0].price}$` : 'Not available',
-      id: comics.id,
+      description: comics.description || 'There is no description',
+      pageCount: comics.pageCount
+        ? `${comics.pageCount} h.`
+        : 'No information about the number of pages',
       thumbnail: comics.thumbnail.path + '.' + comics.thumbnail.extension,
+      language: comics.textObjects.language || 'en-us',
       url: comics.urls[0].url,
     };
   };
 
   // поскольку это кастомный хук из него мы можем вернуть необходимые сущности для дальнейшего использования в других компонентах
-  return {loading, error, getAllCharacters, getCharacter, getAllComics};
+  return {loading, error, getAllCharacters, getCharacter, getAllComics, getComic};
 };
 
 export default useMarvelService;
