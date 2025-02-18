@@ -43,9 +43,8 @@ const ComicsList = () => {
         <li
           className="comics__item"
           key={i}>
+          {/** динамическое формирование пути */}
           <Link to={`/comics/${item.id}`}>
-            {' '}
-            {/** динамическое формирование пути */}
             <img
               src={item.thumbnail}
               alt={item.title}

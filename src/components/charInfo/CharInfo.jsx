@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import './charInfo.scss';
@@ -12,6 +13,7 @@ const CharInfo = props => {
   const [char, setChar] = useState(null);
 
   const {loading, error, getCharacter} = useMarvelService();
+  const {charId} = props;
 
   useEffect(() => {
     updateCharInfo();
@@ -19,18 +21,18 @@ const CharInfo = props => {
 
   useEffect(() => {
     updateCharInfo();
-  }, [props.charId]);
+  }, [charId]);
 
   const onCharLoaded = char => {
     setChar(char);
   };
 
   const updateCharInfo = () => {
-    if (!props.charId) {
+    if (!charId) {
       return;
     }
 
-    getCharacter(props.charId).then(onCharLoaded);
+    getCharacter(charId).then(onCharLoaded);
   };
 
   // skeleton = если что-то из состояний есть то ничего не рендерим, если ничего нет то вставляем компонент скелетон
@@ -56,6 +58,8 @@ const View = ({char}) => {
   if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
     imgStyle = {objectFit: 'fill'};
   }
+
+  console.log(comics);
 
   return (
     <>
@@ -89,11 +93,14 @@ const View = ({char}) => {
         )}
         {comics
           .map((item, i) => {
+            const comicId = `${item.resourceURI.substring(43)}`; // строка из массива данных comics
+
             return (
               <li
                 key={i}
                 className="char__comics-item">
-                {item.name}
+                {/** динамическое формирование пути */}
+                <Link to={`/comics/${comicId}`}>{item.name}</Link>
               </li>
             );
           })

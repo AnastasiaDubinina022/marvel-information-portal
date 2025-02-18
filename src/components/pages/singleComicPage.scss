@@ -32,6 +32,10 @@
     font-weight: bold;
     font-size: 18px;
     line-height: 24px;
+    padding: 0px 7px;
+    border: none;
+    background-color: white;
+    cursor: pointer;
     &:hover {
       color: $main-color;
     }

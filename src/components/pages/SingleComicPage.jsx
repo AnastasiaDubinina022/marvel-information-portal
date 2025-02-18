@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {useParams, Link} from 'react-router-dom';
+import {useParams, useNavigate, Link} from 'react-router-dom';
 
 import './singleComicPage.scss';
 
@@ -8,7 +8,7 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const SingleComicPage = () => {
-  const {comicId} = useParams(); // вытаскиваем comicId из {comicId: '77343'}
+  const {comicId} = useParams(); // вытаскиваем comicId из params {comicId: '77343'}
   const [comic, setComic] = useState(null);
 
   const {loading, error, getComic} = useMarvelService();
@@ -23,7 +23,6 @@ const SingleComicPage = () => {
   };
 
   const onComicLoaded = comic => {
-    console.log(comic);
     setComic(comic);
   };
 
@@ -42,6 +41,18 @@ const SingleComicPage = () => {
 
 const View = ({comic}) => {
   const {title, description, price, pageCount, thumbnail, language} = comic;
+  const navigate = useNavigate();
+
+  // эта проверка не работает на локалхост
+  // const siteOrigin = window.location.origin;  // домен текущего сайта
+
+  // const handleGoBack = () => {
+  //   if (document.referrer.startsWith(siteOrigin)) {  // Возвращаем назад только если реферер с нашего сайта
+  //     navigate(-1);
+  //   } else {            // Иначе ведём на главную
+  //     navigate('/');
+  //   }
+  // }
 
   return (
     <div className="single-comic">
@@ -57,11 +68,12 @@ const View = ({comic}) => {
         <p className="single-comic__descr">{language}</p>
         <div className="single-comic__price">{price}</div>
       </div>
-      <Link
-        to="/comics"
-        className="single-comic__back">
+      <button
+        className="single-comic__back"
+        // onClick={handleGoBack}
+        onClick={() => navigate(-1)}>
         Back to all
-      </Link>
+      </button>
     </div>
   );
 };
