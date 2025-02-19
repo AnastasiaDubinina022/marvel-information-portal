@@ -59,8 +59,6 @@ const View = ({char}) => {
     imgStyle = {objectFit: 'fill'};
   }
 
-  console.log(comics);
-
   return (
     <>
       <div className="char__basics">

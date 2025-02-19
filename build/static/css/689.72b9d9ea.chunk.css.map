@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/689.72b9d9ea.chunk.css","mappings":"AAAA,mBACE,cAEA,aAEA,cADA,mBAFA,WAGA","sources":["components/errorMessage/errorMessage.scss"],"sourcesContent":[".error-message-img {\n  display: block;\n  width: 250px;\n  height: 250px;\n  object-fit: contain;\n  margin: 0 auto;\n}\n"],"names":[],"sourceRoot":""}

@@ -1,7 +1,14 @@
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {lazy, Suspense} from 'react';
+// import {  ComicsPage, SingleComicPage } from '../pages';
 
-import {MainPage, ComicsPage, Page404, SingleComicPage} from '../pages';
 import AppHeader from '../appHeader/AppHeader';
+import Spinner from '../spinner/Spinner';
+// 0,99 Mb
+const Page404 = lazy(() => import('../pages/404'));
+const MainPage = lazy(() => import('../pages/MainPage'));
+const ComicsPage = lazy(() => import('../pages/ComicsPage'));
+const SingleComicPage = lazy(() => import('../pages/SingleComicPage'));
 
 const App = () => {
   return (
@@ -9,24 +16,26 @@ const App = () => {
       <div className="app">
         <AppHeader />
         <main>
-          <Routes>
-            <Route
-              path="/"
-              element={<MainPage />}
-            />
-            <Route
-              path="/comics"
-              element={<ComicsPage />}
-            />
-            <Route
-              path="*"
-              element={<Page404 />}
-            />
-            <Route
-              path="/comics/:comicId" // динамическое формирование пути (:comicId - ключ называем как хотим)
-              element={<SingleComicPage />}
-            />
-          </Routes>
+          <Suspense fallback={<Spinner />}>
+            <Routes>
+              <Route
+                path="/"
+                element={<MainPage />}
+              />
+              <Route
+                path="/comics"
+                element={<ComicsPage />}
+              />
+              <Route
+                path="*"
+                element={<Page404 />}
+              />
+              <Route
+                path="/comics/:comicId" // динамическое формирование пути (:comicId - ключ называем как хотим)
+                element={<SingleComicPage />}
+              />
+            </Routes>
+          </Suspense>
         </main>
       </div>
     </Router>
