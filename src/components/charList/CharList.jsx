@@ -1,4 +1,5 @@
 import {useState, useEffect, useRef} from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
 
 import './charList.scss';
@@ -30,14 +31,22 @@ const CharList = props => {
   };
 
   // здесь аргумент ответ сервера с 9* новыми загруженными персонажами
-  const onCharListLoaded = newCharList => {
+  const onCharListLoaded = async newCharList => {
     let ended = false;
 
     if (newCharList.length < 9) {
       ended = true;
     }
 
-    setCharList(charList => [...charList, ...newCharList]); // соединяем старый массив с персонажами с новым и пилим в стэйт
+    // задержка чтобы каждый перс анимировался поочередно
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    
+    for (let char of newCharList) {
+        await delay(200);
+        setCharList(charList => [...charList, char]);  // функция delay будет вызывать задержку на каждой итерации цикла (добавление в стейт новых персонажей)
+    }
+
+    // setCharList(charList => [...charList, ...newCharList]); // соединяем старый массив с персонажами с новым и пилим в стэйт
     setNewItemLoading(false);
     setOffset(offset => offset + 9);
     setCharEnded(ended);
@@ -67,32 +76,40 @@ const CharList = props => {
       }
 
       return (
-        <li
-          className={imgStyle}
-          key={item.id}
-          tabIndex={0}
-          ref={elem => (itemRefs.current[i] = elem)} // последовательно формируем массив с рефами, elem - ссылка на элемент в DOM
-          onClick={() => {
-            props.onCharSelected(item.id);
-            focusOnItem(i);
-          }}
-          onKeyDown={e => {
-            if (e.key === 'Enter' || e.key === ' ') {
+        <CSSTransition timeout={500} classNames="char__item" key={item.id}>
+          <li
+            className={imgStyle}
+            key={item.id}
+            tabIndex={0}
+            ref={elem => (itemRefs.current[i] = elem)} // последовательно формируем массив с рефами, elem - ссылка на элемент в DOM
+            onClick={() => {
               props.onCharSelected(item.id);
               focusOnItem(i);
-            }
-          }}>
-          <img
-            src={item.thumbnail}
-            alt={item.name}
-          />
-          <div className="char__name">{item.name}</div>
-        </li>
+            }}
+            onKeyDown={e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                props.onCharSelected(item.id);
+                focusOnItem(i);
+              }
+            }}>
+            <img
+              src={item.thumbnail}
+              alt={item.name}
+            />
+            <div className="char__name">{item.name}</div>
+          </li>
+        </CSSTransition>
       );
     });
 
     // А эта конструкция вынесена для центровки спиннера/ошибки
-    return <ul className="char__grid">{items}</ul>;
+    return (
+        <ul className="char__grid">
+          <TransitionGroup component={null}>
+            {items}
+          </TransitionGroup>
+        </ul>
+    ) 
   }
 
   const items = renderItems(charList);
@@ -102,7 +119,7 @@ const CharList = props => {
   // const content = !(loading || error) ? items : null;  // в отличие от классов здесь это условие не нужно, т.к. при каждом перерендере все переменные пересоздаются и с этой строкой все персы пропадают в момент дозагрузки  тк на какой-то момент сюда помещается null
 
   return (
-    <div className="char__list">
+      <div className="char__list">
       {spinner}
       {errorMessage}
       {items}

@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import './comicsList.scss';
 
@@ -24,14 +25,22 @@ const ComicsList = () => {
     getAllComics(offset).then(onComicsListLoaded);
   };
 
-  const onComicsListLoaded = newComicsList => {
+  const onComicsListLoaded = async newComicsList => {
     let ended = false;
 
     if (newComicsList.length < 8) {
       ended = true;
     }
 
-    setComicsList(comicsList => [...comicsList, ...newComicsList]);
+    // задержка чтобы каждый перс анимировался поочередно
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    
+    for (let comic of newComicsList) {
+        await delay(200);
+        setComicsList(comicsList => [...comicsList, comic]);  // функция delay будет вызывать задержку на каждой итерации цикла (добавление в стейт новых комиксов)
+    }
+
+    // setComicsList(comicsList => [...comicsList, ...newComicsList]);  // вариант бз цикла и задержки анимации
     setNewItemLoading(false);
     setOffset(offset => offset + 8);
     setComicsEnded(ended);
@@ -40,24 +49,32 @@ const ComicsList = () => {
   function renderItems(arr) {
     const items = arr.map((item, i) => {
       return (
-        <li
-          className="comics__item"
-          key={i}>
-          {/** динамическое формирование пути */}
-          <Link to={`/comics/${item.id}`}>
-            <img
-              src={item.thumbnail}
-              alt={item.title}
-              className="comics__item-img"
-            />
-            <div className="comics__item-name">{item.title}</div>
-            <div className="comics__item-price">{item.price}</div>
-          </Link>
-        </li>
+        <CSSTransition timeout={500} classNames="comics__item" key={item.id}>
+          <li
+            className="comics__item"
+            key={i}>
+            {/** динамическое формирование пути */}
+            <Link to={`/comics/${item.id}`}>
+              <img
+                src={item.thumbnail}
+                alt={item.title}
+                className="comics__item-img"
+              />
+              <div className="comics__item-name">{item.title}</div>
+              <div className="comics__item-price">{item.price}</div>
+            </Link>
+          </li>
+        </CSSTransition>
       );
     });
 
-    return <ul className="comics__grid">{items}</ul>;
+    return (
+      <ul className="comics__grid">
+        <TransitionGroup component={null}>
+          {items}
+        </TransitionGroup>
+      </ul>
+    )
   }
 
   const items = renderItems(comicsList);
