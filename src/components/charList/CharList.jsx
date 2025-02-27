@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef} from 'react';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import {TransitionGroup, CSSTransition} from 'react-transition-group';
 import PropTypes from 'prop-types';
 
 import './charList.scss';
@@ -40,10 +40,10 @@ const CharList = props => {
 
     // задержка чтобы каждый перс анимировался поочередно
     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-    
+
     for (let char of newCharList) {
-        await delay(200);
-        setCharList(charList => [...charList, char]);  // функция delay будет вызывать задержку на каждой итерации цикла (добавление в стейт новых персонажей)
+      await delay(200);
+      setCharList(charList => [...charList, char]); // функция delay будет вызывать задержку на каждой итерации цикла (добавление в стейт новых персонажей)
     }
 
     // setCharList(charList => [...charList, ...newCharList]); // соединяем старый массив с персонажами с новым и пилим в стэйт
@@ -76,7 +76,10 @@ const CharList = props => {
       }
 
       return (
-        <CSSTransition timeout={500} classNames="char__item" key={item.id}>
+        <CSSTransition
+          timeout={500}
+          classNames="char__item"
+          key={item.id}>
           <li
             className={imgStyle}
             key={item.id}
@@ -104,12 +107,10 @@ const CharList = props => {
 
     // А эта конструкция вынесена для центровки спиннера/ошибки
     return (
-        <ul className="char__grid">
-          <TransitionGroup component={null}>
-            {items}
-          </TransitionGroup>
-        </ul>
-    ) 
+      <ul className="char__grid">
+        <TransitionGroup component={null}>{items}</TransitionGroup>
+      </ul>
+    );
   }
 
   const items = renderItems(charList);
@@ -119,7 +120,7 @@ const CharList = props => {
   // const content = !(loading || error) ? items : null;  // в отличие от классов здесь это условие не нужно, т.к. при каждом перерендере все переменные пересоздаются и с этой строкой все персы пропадают в момент дозагрузки  тк на какой-то момент сюда помещается null
 
   return (
-      <div className="char__list">
+    <div className="char__list">
       {spinner}
       {errorMessage}
       {items}

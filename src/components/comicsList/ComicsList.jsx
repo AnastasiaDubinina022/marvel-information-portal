@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
 import './comicsList.scss';
 
@@ -34,10 +34,10 @@ const ComicsList = () => {
 
     // задержка чтобы каждый перс анимировался поочередно
     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-    
+
     for (let comic of newComicsList) {
-        await delay(200);
-        setComicsList(comicsList => [...comicsList, comic]);  // функция delay будет вызывать задержку на каждой итерации цикла (добавление в стейт новых комиксов)
+      await delay(200);
+      setComicsList(comicsList => [...comicsList, comic]); // функция delay будет вызывать задержку на каждой итерации цикла (добавление в стейт новых комиксов)
     }
 
     // setComicsList(comicsList => [...comicsList, ...newComicsList]);  // вариант бз цикла и задержки анимации
@@ -49,7 +49,10 @@ const ComicsList = () => {
   function renderItems(arr) {
     const items = arr.map((item, i) => {
       return (
-        <CSSTransition timeout={500} classNames="comics__item" key={item.id}>
+        <CSSTransition
+          timeout={500}
+          classNames="comics__item"
+          key={item.id}>
           <li
             className="comics__item"
             key={i}>
@@ -70,11 +73,9 @@ const ComicsList = () => {
 
     return (
       <ul className="comics__grid">
-        <TransitionGroup component={null}>
-          {items}
-        </TransitionGroup>
+        <TransitionGroup component={null}>{items}</TransitionGroup>
       </ul>
-    )
+    );
   }
 
   const items = renderItems(comicsList);
