@@ -7,6 +7,7 @@
     position: sticky; // прилипание при прокрутке
     top: 10px; // верхний отступ до прилипания
     z-index: 5;
+    margin-bottom: 150px;  // чтобы не наезжал на CharSearchForm
     background-color: #fff;
     &-name {
       font-weight: bold;

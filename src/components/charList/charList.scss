@@ -6,7 +6,8 @@
     display: grid;
     grid-template-columns: 650px 425px;
     column-gap: 25px;
-    align-items: start;
+    align-items: auto;
+    position: relative;
   }
   &__grid {
     display: grid;
