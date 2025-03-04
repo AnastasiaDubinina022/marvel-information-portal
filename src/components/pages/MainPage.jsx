@@ -24,12 +24,12 @@ const MainPage = () => {
         <ErrorBoundary>
           <CharList onCharSelected={onCharSelected} />
         </ErrorBoundary>
-        <div className='char__grid-for-search-form'>
+        <div className="char__grid-for-search-form">
           <ErrorBoundary>
             <CharInfo charId={selectedChar} />{' '}
           </ErrorBoundary>
           <ErrorBoundary>
-            <CharSearchForm/>
+            <CharSearchForm />
           </ErrorBoundary>
         </div>
       </div>

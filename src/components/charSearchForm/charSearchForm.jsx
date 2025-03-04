@@ -1,45 +1,87 @@
-import { useState } from "react";
-import { Formik, Form, Field, ErrorMessage as FormikErrorMessage } from "formik";
+import {useState} from 'react';
+import {Formik, Form, Field, ErrorMessage as FormikErrorMessage} from 'formik';
+import * as Yup from 'yup';
+
+import ErrorMessage from '../errorMessage/ErrorMessage';
+import useMarvelService from '../../services/MarvelService';
 
 import './charSearchForm.scss';
 
-const validate = (values) => {
-    const errors = {};    
-
-    if (!values.charName) {
-        errors.charName = 'Обязательное поле!';
-    } else if (values.charName.length < 2) {
-        errors.charName = 'Минимум 2 символа для заполнения!';
-    }
-
-    return errors; 
-}
-
 const CharSearchForm = () => {
+  const [char, setChar] = useState(null);
 
-    return (
-        <div className="char__search-form">
-            <Formik
-                initialValues={{
-                    charName: ''
-                }}
-                validationSchema={validate}
-                onSubmit={values => console.log(JSON.stringify(values, null, 2))}>
-                <Form >
-                    <label className='char__search-label' htmlFor="charName">Or find a character by name:</label>
-                    <div className="char__search-wrapper">
-                        <Field 
-                        id='charName' 
-                        name='charName' 
-                        type='text' 
-                        placeholder='Enter name'/>
-                        <button type="submit">find</button>
-                    </div>
-                    <FormikErrorMessage className='char__search-error' name='charName' component='div'/>
-                </Form>
-            </Formik>
-        </div>
-    )
-} 
+  const {loading, error, getCharacterByName} = useMarvelService();
+
+  const onCharLoaded = char => {
+    setChar(char);
+  };
+
+  const updateChar = name => {
+    getCharacterByName(name).then(onCharLoaded);
+  };
+
+  const errorMessage = error ? (
+    <div className="char__search-critical-error">
+      <ErrorMessage />
+    </div>
+  ) : null;
+
+  const results = !char ? null : char.length > 0 ? (
+    <div className="char__search-wrapper">
+      <div className="char__search-success">There is! Visit {char[0].name} page?</div>
+      <button className="button button__secondary">
+        <div className="inner">to page</div>
+      </button>
+    </div>
+  ) : (
+    <div className="char__search-error">
+      This character was not found. Check the name and try again
+    </div>
+  );
+
+  return (
+    <div className="char__search-form">
+      <Formik
+        initialValues={{
+          charName: '',
+        }}
+        validationSchema={Yup.object({
+          charName: Yup.string().required('Required field!'),
+        })}
+        onSubmit={({charName}) => {
+          updateChar(charName);
+        }}>
+        <Form>
+          <label
+            className="char__search-label"
+            htmlFor="charName">
+            Or find a character by name:
+          </label>
+          <div className="char__search-wrapper">
+            <Field
+              id="charName"
+              name="charName"
+              type="text"
+              placeholder="Enter name"
+            />
+            <button
+              type="submit"
+              className="button button__main"
+              disabled={loading}>
+              <div className="inner">find</div>
+            </button>
+          </div>
+          <FormikErrorMessage
+            className="char__search-error"
+            name="charName"
+            component="div"
+          />
+        </Form>
+      </Formik>
+      {errorMessage}
+      {results}
+    </div>
+  );
+};
 
 export default CharSearchForm;

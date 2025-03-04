@@ -17,12 +17,10 @@ const AnimatedRoutes = () => {
   const location = useLocation(); // получаем текущий маршрут - объект location, содержащий информацию о текущем URL (ниже используем location.pathname, чтобы отслеживать изменения маршрута)
 
   return (
+    //** Suspense компонент-обертка для элементов lazy, fallback - комп.который будем показывать пока идет подгрузка компонентов в Suspense */}
     <Suspense fallback={<Spinner />}>
-      {' '}
-      {/** Suspense компонент-обертка для элементов lazy, fallback - комп.который будем показывать пока идет подгрузка компонентов в Suspense */}
+      {/** компонент framer motion */}
       <AnimatePresence mode="wait">
-        {' '}
-        {/** компонент framer motion */}
         <Routes
           location={location}
           key={location.pathname}>

@@ -10,7 +10,7 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 const RandomChar = () => {
   const [char, setChar] = useState({});
 
-  const {loading, error, getCharacter} = useMarvelService(); // вытаскиваем нужные сущности из вызова хука useMarvelService
+  const {loading, error, getCharacter, clearError} = useMarvelService(); // вытаскиваем нужные сущности из вызова хука useMarvelService
 
   useEffect(() => {
     updateChar();
@@ -39,6 +39,8 @@ const RandomChar = () => {
   // };
 
   const updateChar = () => {
+    clearError();
+
     const id = Math.floor(Math.random() * (1011500 - 1010900) + 1010900); // диапазон айдишников в базе и выбор случайного
     getCharacter(id) // из функции getCharacter мы получаем объект с уже трансформированными данными и устанавливаем его в стэйт
       .then(onCharLoaded); // в .then приходит объект и автоматически подставляется аргументом в указанную ссылочную функцию

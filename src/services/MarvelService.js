@@ -1,7 +1,7 @@
 import {useHttp} from '../hooks/http.hook';
 
 const useMarvelService = () => {
-  const {loading, error, request} = useHttp(); // вытаскиваем сущности функционала из объекта useHttp
+  const {loading, error, request, clearError} = useHttp(); // вытаскиваем сущности функционала из объекта useHttp
 
   const _apiBase = 'https://gateway.marvel.com:443/v1/public/'; // _ говорит другим программистам что эти данные нельзя менять
   const _apiKey = 'apikey=48016fbc64705610f2040226da4655f7';
@@ -65,8 +65,23 @@ const useMarvelService = () => {
     };
   };
 
+  const getCharacterByName = async charName => {
+    const result = await request(`${_apiBase}characters?name=${charName}&${_apiKey}`);
+
+    return result.data.results.map(_transformCharacter);
+  };
+
   // поскольку это кастомный хук из него мы можем вернуть необходимые сущности для дальнейшего использования в других компонентах
-  return {loading, error, getAllCharacters, getCharacter, getAllComics, getComic};
+  return {
+    loading,
+    error,
+    clearError,
+    getAllCharacters,
+    getCharacter,
+    getAllComics,
+    getComic,
+    getCharacterByName,
+  };
 };
 
 export default useMarvelService;
