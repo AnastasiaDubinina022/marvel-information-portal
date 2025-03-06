@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {Link} from 'react-router-dom';
 import {Formik, Form, Field, ErrorMessage as FormikErrorMessage} from 'formik';
 import * as Yup from 'yup';
 
@@ -26,12 +27,14 @@ const CharSearchForm = () => {
     </div>
   ) : null;
 
-  const results = !char ? null : char.length > 0 ? (
+  const results = !char ? null : char.name ? (
     <div className="char__search-wrapper">
-      <div className="char__search-success">There is! Visit {char[0].name} page?</div>
-      <button className="button button__secondary">
-        <div className="inner">to page</div>
-      </button>
+      <div className="char__search-success">There is! Visit {char.name} page?</div>
+      <Link to={`/${char.name}`}>
+        <button className="button button__secondary">
+          <div className="inner">to page</div>
+        </button>
+      </Link>
     </div>
   ) : (
     <div className="char__search-error">

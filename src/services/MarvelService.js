@@ -68,7 +68,7 @@ const useMarvelService = () => {
   const getCharacterByName = async charName => {
     const result = await request(`${_apiBase}characters?name=${charName}&${_apiKey}`);
 
-    return result.data.results.map(_transformCharacter);
+    return _transformCharacter(result.data.results[0]);
   };
 
   // поскольку это кастомный хук из него мы можем вернуть необходимые сущности для дальнейшего использования в других компонентах

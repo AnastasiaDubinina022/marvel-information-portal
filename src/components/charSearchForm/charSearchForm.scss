@@ -3,9 +3,8 @@
 .char {
   &__search {
     &-form {
-      align-self: last baseline;
       padding: 25px;
-      margin-top: 30px;
+      margin-top: auto;
       box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
       position: relative;
       z-index: 5;
@@ -52,7 +51,7 @@
   }
 }
 
-.char__grid-for-search-form {
-  display: grid;
-  grid-template-rows: auto 1fr; /* Верхний элемент занимает auto, нижний - оставшееся место */
+.char__content-side-column {
+  display: flex;
+  flex-direction: column;
 }

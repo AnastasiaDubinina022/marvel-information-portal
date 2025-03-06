@@ -1,11 +1,11 @@
 import {useState, useEffect} from 'react';
-import {useParams, useNavigate, Link} from 'react-router-dom';
+import {useParams, useNavigate} from 'react-router-dom';
 
 import './singleComicPage.scss';
 
-import useMarvelService from '../../services/MarvelService';
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
+import useMarvelService from '../../../services/MarvelService';
+import Spinner from '../../spinner/Spinner';
+import ErrorMessage from '../../errorMessage/ErrorMessage';
 
 const SingleComicPage = () => {
   const {comicId} = useParams(); // вытаскиваем comicId из params {comicId: '77343'}

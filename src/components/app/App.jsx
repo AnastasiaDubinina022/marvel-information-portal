@@ -11,7 +11,8 @@ import './app.scss';
 const Page404 = lazy(() => import('../pages/404'));
 const MainPage = lazy(() => import('../pages/MainPage'));
 const ComicsPage = lazy(() => import('../pages/ComicsPage'));
-const SingleComicPage = lazy(() => import('../pages/SingleComicPage'));
+const SingleComicPage = lazy(() => import('../pages/singleComicPage/SingleComicPage'));
+const SingleCharacterPage = lazy(() => import('../pages/singleCharacterPage/SingleCharacterPage'));
 
 const AnimatedRoutes = () => {
   const location = useLocation(); // получаем текущий маршрут - объект location, содержащий информацию о текущем URL (ниже используем location.pathname, чтобы отслеживать изменения маршрута)
@@ -81,6 +82,21 @@ const AnimatedRoutes = () => {
                   ease: 'easeInOut',
                 }}>
                 <SingleComicPage />
+              </motion.div>
+            }
+          />
+          <Route
+            path="/:charName"
+            element={
+              <motion.div
+                initial={{opacity: 0, x: -100}}
+                animate={{opacity: 1, x: 0}}
+                exit={{opacity: 0, x: 100}}
+                transition={{
+                  duration: 0.5,
+                  ease: 'easeInOut',
+                }}>
+                <SingleCharacterPage />
               </motion.div>
             }
           />
