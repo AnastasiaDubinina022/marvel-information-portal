@@ -11,13 +11,15 @@ import './charSearchForm.scss';
 const CharSearchForm = () => {
   const [char, setChar] = useState(null);
 
-  const {loading, error, getCharacterByName} = useMarvelService();
+  const {loading, error, clearError, getCharacterByName} = useMarvelService();
 
   const onCharLoaded = char => {
     setChar(char);
   };
 
   const updateChar = name => {
+    clearError();
+
     getCharacterByName(name).then(onCharLoaded);
   };
 
@@ -30,7 +32,7 @@ const CharSearchForm = () => {
   const results = !char ? null : char.name ? (
     <div className="char__search-wrapper">
       <div className="char__search-success">There is! Visit {char.name} page?</div>
-      <Link to={`/${char.name}`}>
+      <Link to={`/characters/${char.name}`}>
         <button className="button button__secondary">
           <div className="inner">to page</div>
         </button>

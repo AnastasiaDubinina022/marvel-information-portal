@@ -4,6 +4,9 @@ import {AnimatePresence, motion} from 'framer-motion';
 
 import AppHeader from '../appHeader/AppHeader';
 import Spinner from '../spinner/Spinner';
+// import SinglePage from '../pages/SinglePage';
+// import SingleCharacterLayout from '../pages/singleCharacterLayuot/SingleCharacterLayout';
+// import SingleComicLayout from '../pages/singleComicLayout/SingleComicLayout';
 
 import './app.scss';
 
@@ -11,8 +14,9 @@ import './app.scss';
 const Page404 = lazy(() => import('../pages/404'));
 const MainPage = lazy(() => import('../pages/MainPage'));
 const ComicsPage = lazy(() => import('../pages/ComicsPage'));
-const SingleComicPage = lazy(() => import('../pages/singleComicPage/SingleComicPage'));
-const SingleCharacterPage = lazy(() => import('../pages/singleCharacterPage/SingleCharacterPage'));
+const SinglePage = lazy(() => import('../pages/SinglePage'));
+const SingleComicLayout = lazy(() => import('../pages/singleComicLayout/SingleComicLayout'));
+const SingleCharacterLayout = lazy(() => import('../pages/singleCharacterLayuot/SingleCharacterLayout'));
 
 const AnimatedRoutes = () => {
   const location = useLocation(); // получаем текущий маршрут - объект location, содержащий информацию о текущем URL (ниже используем location.pathname, чтобы отслеживать изменения маршрута)
@@ -71,7 +75,7 @@ const AnimatedRoutes = () => {
             }
           />
           <Route
-            path="/comics/:comicId" // динамическое формирование пути (:comicId - ключ называем как хотим)
+            path="/comics/:id" // динамическое формирование пути (:comicId - ключ называем как хотим)
             element={
               <motion.div
                 initial={{opacity: 0, x: -100}}
@@ -81,12 +85,12 @@ const AnimatedRoutes = () => {
                   duration: 0.5,
                   ease: 'easeInOut',
                 }}>
-                <SingleComicPage />
+                <SinglePage Component={SingleComicLayout} dataType='comic'/>
               </motion.div>
             }
           />
           <Route
-            path="/:charName"
+            path="/characters/:id"
             element={
               <motion.div
                 initial={{opacity: 0, x: -100}}
@@ -96,7 +100,7 @@ const AnimatedRoutes = () => {
                   duration: 0.5,
                   ease: 'easeInOut',
                 }}>
-                <SingleCharacterPage />
+                <SinglePage Component={SingleCharacterLayout} dataType='character'/>
               </motion.div>
             }
           />

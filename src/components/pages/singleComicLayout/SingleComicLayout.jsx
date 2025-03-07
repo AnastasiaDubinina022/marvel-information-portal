@@ -1,46 +1,9 @@
-import {useState, useEffect} from 'react';
-import {useParams, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
-import './singleComicPage.scss';
+import './singleComicLayout.scss';
 
-import useMarvelService from '../../../services/MarvelService';
-import Spinner from '../../spinner/Spinner';
-import ErrorMessage from '../../errorMessage/ErrorMessage';
-
-const SingleComicPage = () => {
-  const {comicId} = useParams(); // вытаскиваем comicId из params {comicId: '77343'}
-  const [comic, setComic] = useState(null);
-
-  const {loading, error, getComic} = useMarvelService();
-
-  useEffect(() => {
-    updateComic();
-  }, [comicId]);
-
-  const updateComic = () => {
-    // clearError();
-    getComic(comicId).then(onComicLoaded);
-  };
-
-  const onComicLoaded = comic => {
-    setComic(comic);
-  };
-
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(loading || error || !comic) ? <View comic={comic} /> : null;
-
-  return (
-    <>
-      {errorMessage}
-      {spinner}
-      {content}
-    </>
-  );
-};
-
-const View = ({comic}) => {
-  const {title, description, price, pageCount, thumbnail, language} = comic;
+const SingleComicLayout = ({data}) => {
+  const {title, description, price, pageCount, thumbnail, language} = data;
   const navigate = useNavigate();
 
   // эта проверка не работает на локалхост
@@ -78,4 +41,4 @@ const View = ({comic}) => {
   );
 };
 
-export default SingleComicPage;
+export default SingleComicLayout;

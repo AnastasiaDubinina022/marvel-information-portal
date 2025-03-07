@@ -17,6 +17,11 @@ const useMarvelService = () => {
   const getCharacter = async id => {
     const result = await request(`${_apiBase}characters/${id}?${_apiKey}`); // сюда помещаем ответ от сервера с большим объектом данных
 
+    if (!result) {
+      console.warn(`⚠ Персонаж с ID ${id} не найден, показываем заглушку`);
+      return {name: 'Unknown Character', description: 'No data available'};
+    }
+
     // ретерним уже трансформированные, только нужные нам данные
     return _transformCharacter(result.data.results[0]); // (объект персонажа)
   };
@@ -68,6 +73,9 @@ const useMarvelService = () => {
   const getCharacterByName = async charName => {
     const result = await request(`${_apiBase}characters?name=${charName}&${_apiKey}`);
 
+    if (!result.data.results[0]) {
+      return {};
+    }
     return _transformCharacter(result.data.results[0]);
   };
 
