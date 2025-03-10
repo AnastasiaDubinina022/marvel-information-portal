@@ -38,15 +38,7 @@ const CharList = props => {
       ended = true;
     }
 
-    // задержка чтобы каждый перс анимировался поочередно
-    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-    for (let char of newCharList) {
-      await delay(200);
-      setCharList(charList => [...charList, char]); // функция delay будет вызывать задержку на каждой итерации цикла (добавление в стейт новых персонажей)
-    }
-
-    // setCharList(charList => [...charList, ...newCharList]); // соединяем старый массив с персонажами с новым и пилим в стэйт
+    setCharList(charList => [...charList, ...newCharList]); // соединяем старый массив с персонажами с новым и пилим в стэйт
     setNewItemLoading(false);
     setOffset(offset => offset + 9);
     setCharEnded(ended);
@@ -60,13 +52,20 @@ const CharList = props => {
   // };
 
   const focusOnItem = id => {
-    itemRefs.current.forEach(item => item.classList.remove('char__item_selected'));
-    itemRefs.current[id].classList.add('char__item_selected');
-    itemRefs.current[id].focus();
+    itemRefs.current.forEach(item => {
+      if (item) item.classList.remove('char__item_selected');
+    }); // проверка что элеменнт существует т.к. рефы
+
+    if (itemRefs.current.id) {
+      itemRefs.current[id].classList.add('char__item_selected');
+      itemRefs.current[id].focus();
+    } // Теперь c проверками код не сломается, даже если itemRefs.current содержит null-значения.
   };
 
   // Этот метод создан для оптимизации, чтобы не помещать такую конструкцию в метод render
   function renderItems(arr) {
+    itemRefs.current = []; // Очищаем массив перед каждым ререндером, так он будт содержать только актуальные значения
+
     const items = arr.map((item, i) => {
       let imgStyle = 'char__item';
       if (

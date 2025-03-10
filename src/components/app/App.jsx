@@ -16,7 +16,9 @@ const MainPage = lazy(() => import('../pages/MainPage'));
 const ComicsPage = lazy(() => import('../pages/ComicsPage'));
 const SinglePage = lazy(() => import('../pages/SinglePage'));
 const SingleComicLayout = lazy(() => import('../pages/singleComicLayout/SingleComicLayout'));
-const SingleCharacterLayout = lazy(() => import('../pages/singleCharacterLayuot/SingleCharacterLayout'));
+const SingleCharacterLayout = lazy(
+  () => import('../pages/singleCharacterLayuot/SingleCharacterLayout')
+);
 
 const AnimatedRoutes = () => {
   const location = useLocation(); // получаем текущий маршрут - объект location, содержащий информацию о текущем URL (ниже используем location.pathname, чтобы отслеживать изменения маршрута)
@@ -85,7 +87,10 @@ const AnimatedRoutes = () => {
                   duration: 0.5,
                   ease: 'easeInOut',
                 }}>
-                <SinglePage Component={SingleComicLayout} dataType='comic'/>
+                <SinglePage
+                  Component={SingleComicLayout}
+                  dataType="comic"
+                />
               </motion.div>
             }
           />
@@ -100,7 +105,10 @@ const AnimatedRoutes = () => {
                   duration: 0.5,
                   ease: 'easeInOut',
                 }}>
-                <SinglePage Component={SingleCharacterLayout} dataType='character'/>
+                <SinglePage
+                  Component={SingleCharacterLayout}
+                  dataType="character"
+                />
               </motion.div>
             }
           />
