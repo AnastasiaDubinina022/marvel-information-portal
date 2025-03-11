@@ -8,6 +8,24 @@ import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
+const setContent = (process, Component, newItemLoading) => {
+  // логика этого компонента отличается от других, поэтому здесь отдельная функция представления контента а не импортированная из utils
+
+  switch (process) {
+    case 'waiting':
+      return <Spinner />;
+    // break;  // если в case есть return то break не обязателен, код дальше по кейсам не пойдет
+    case 'loading':
+      return newItemLoading ? <Component /> : <Spinner />; // если процесс и это дозагрузка персонажей то рендерим просто компонент, если это не дозагрузка новых персонажей то спиннер
+    case 'confirmed':
+      return <Component />;
+    case 'error':
+      return <ErrorMessage />;
+    default:
+      throw new Error('Unexpected process state');
+  }
+};
+
 const CharList = props => {
   const [charList, setCharList] = useState([]);
   // const [loading, setLoading] = useState(true);  // эти состояния теперь контролируются из useHttp
@@ -16,7 +34,7 @@ const CharList = props => {
   const [offset, setOffset] = useState(210);
   const [charEnded, setCharEnded] = useState(false);
 
-  const {loading, error, getAllCharacters} = useMarvelService(); // вытаскиваем сущности из объекта вызова useMarvelService
+  const {process, setProcess, getAllCharacters} = useMarvelService(); // вытаскиваем сущности из объекта вызова useMarvelService
 
   useEffect(() => {
     onRequest(offset, true);
@@ -26,7 +44,8 @@ const CharList = props => {
   const onRequest = (offset, initial) => {
     initial ? setNewItemLoading(false) : setNewItemLoading(true);
     getAllCharacters(offset) // здесь если не передать аргуемент подставится null и метод возьмет оффсет по умолчанию в getAllCharacters
-      .then(onCharListLoaded); // сюда приходит ответ с сервера с 9ю персонажами и подставляется аргументом в onCharListLoaded
+      .then(onCharListLoaded) // сюда приходит ответ с сервера с 9ю персонажами и подставляется аргументом в onCharListLoaded
+      .then(() => setProcess('confirmed'));
     // .catch(onError);     // ошибки теперь обрабатываются в useHttp
   };
 
@@ -112,17 +131,13 @@ const CharList = props => {
     );
   }
 
-  const items = renderItems(charList);
-
-  const spinner = loading && !newItemLoading ? <Spinner /> : null; // если идет первая загрузка, но не дозагрузка новых чаровб то показ. спиннер
-  const errorMessage = error ? <ErrorMessage /> : null;
+  // const spinner = loading && !newItemLoading ? <Spinner /> : null; // если идет первая загрузка, но не дозагрузка новых чаровб то показ. спиннер
+  // const errorMessage = error ? <ErrorMessage /> : null;
   // const content = !(loading || error) ? items : null;  // в отличие от классов здесь это условие не нужно, т.к. при каждом перерендере все переменные пересоздаются и с этой строкой все персы пропадают в момент дозагрузки  тк на какой-то момент сюда помещается null
 
   return (
     <div className="char__list">
-      {spinner}
-      {errorMessage}
-      {items}
+      {setContent(process, () => renderItems(charList), newItemLoading)}
       <button
         className="button button__main button__long"
         disabled={newItemLoading} //  если newItemLoading true кнопка блокируется

@@ -1,7 +1,7 @@
 import {useHttp} from '../hooks/http.hook';
 
 const useMarvelService = () => {
-  const {loading, error, request, clearError} = useHttp(); // вытаскиваем сущности функционала из объекта useHttp
+  const {loading, error, process, setProcess, request, clearError} = useHttp(); // вытаскиваем сущности функционала из объекта useHttp
 
   const _apiBase = 'https://gateway.marvel.com:443/v1/public/'; // _ говорит другим программистам что эти данные нельзя менять
   const _apiKey = 'apikey=48016fbc64705610f2040226da4655f7';
@@ -81,8 +81,8 @@ const useMarvelService = () => {
 
   // поскольку это кастомный хук из него мы можем вернуть необходимые сущности для дальнейшего использования в других компонентах
   return {
-    loading,
-    error,
+    process,
+    setProcess,
     clearError,
     getAllCharacters,
     getCharacter,

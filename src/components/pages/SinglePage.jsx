@@ -2,15 +2,14 @@ import {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 
 import useMarvelService from '../../services/MarvelService';
+import setContent from '../../utils/setContent';
 import AppBanner from '../../components/appBanner/AppBanner';
-import Spinner from '../../components/spinner/Spinner';
-import ErrorMessage from '../../components/errorMessage/ErrorMessage';
 
 const SinglePage = ({Component, dataType}) => {
   const {id} = useParams(); // вытаскиваем comicId из params {comicId: '77343'}
   const [data, setData] = useState(null); // сюда будет приходить или объект комикса или объект персонажа в зависимости от dataType, поэтому просто дата
 
-  const {loading, error, clearError, getComic, getCharacterByName} = useMarvelService();
+  const {process, setProcess, clearError, getComic, getCharacterByName} = useMarvelService();
 
   useEffect(() => {
     updateData();
@@ -21,10 +20,14 @@ const SinglePage = ({Component, dataType}) => {
 
     switch (dataType) {
       case 'comic':
-        getComic(id).then(onDataLoaded);
+        getComic(id)
+          .then(onDataLoaded)
+          .then(() => setProcess('confirmed'));
         break;
       case 'character':
-        getCharacterByName(id).then(onDataLoaded);
+        getCharacterByName(id)
+          .then(onDataLoaded)
+          .then(() => setProcess('confirmed'));
         break;
       default:
         console.warn(`⚠ Неизвестный dataType: ${dataType}`);
@@ -40,16 +43,14 @@ const SinglePage = ({Component, dataType}) => {
   //     return <p>Loading...</p>; // Можно заменить на спиннер
   // }
 
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(loading || error || !data) ? <Component data={data} /> : null;
+  // const errorMessage = error ? <ErrorMessage /> : null;
+  // const spinner = loading ? <Spinner /> : null;
+  // const content = !(loading || error || !data) ? <Component data={data} /> : null;
 
   return (
     <>
       <AppBanner />
-      {errorMessage}
-      {spinner}
-      {content}
+      {setContent(process, Component, data)}
     </>
   );
 };

@@ -4,13 +4,12 @@ import './randomChar.scss';
 
 import mjolnir from '../../resources/img/mjolnir.png';
 import useMarvelService from '../../services/MarvelService';
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
+import setContent from '../../utils/setContent';
 
 const RandomChar = () => {
   const [char, setChar] = useState({});
 
-  const {loading, error, getCharacter, clearError} = useMarvelService(); // вытаскиваем нужные сущности из вызова хука useMarvelService
+  const {process, setProcess, getCharacter, clearError} = useMarvelService(); // вытаскиваем нужные сущности из вызова хука useMarvelService
 
   useEffect(() => {
     updateChar();
@@ -43,19 +42,19 @@ const RandomChar = () => {
 
     const id = Math.floor(Math.random() * (1011500 - 1010900) + 1010900); // диапазон айдишников в базе и выбор случайного
     getCharacter(id) // из функции getCharacter мы получаем объект с уже трансформированными данными и устанавливаем его в стэйт
-      .then(onCharLoaded); // в .then приходит объект и автоматически подставляется аргументом в указанную ссылочную функцию
+      .then(onCharLoaded) // в .then приходит объект и автоматически подставляется аргументом в указанную ссылочную функцию
+      .then(() => setProcess('confirmed'));
     // .catch(onError);  // блок catch теперь здесь не нужен, т.к. ошибки обрабатываются в хуке useHttp
   };
 
-  const errorMessage = error ? <ErrorMessage /> : null; // выносим сюда сложную логику условного рендеринга
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(loading || error) ? <View char={char} /> : null;
+  // const errorMessage = error ? <ErrorMessage /> : null; // выносим сюда сложную логику условного рендеринга
+  // const spinner = loading ? <Spinner /> : null;
+  // const content = !(loading || error) ? <View char={char} /> : null;
 
   return (
     <div className="randomchar">
-      {/* условно рендерим один из компонентов в зависимости от ситуации. если в переменной null то на странице ничего не отобразится*/}
-      {errorMessage} {spinner}
-      {content}
+      {setContent(process, View, char)}
+
       <div className="randomchar__static">
         <p className="randomchar__title">
           Random character for today!
@@ -80,8 +79,8 @@ const RandomChar = () => {
 
 // рендерящий компонент, отвечающий только за отображeние, не содержащий никакой логики (вьюшка, вью), только принимает данные и отображает.
 // а все запросы, логика и тд. выше в основном компоненте
-const View = ({char}) => {
-  const {name, description, thumbnail, homepage, wiki} = char;
+const View = ({data}) => {
+  const {name, description, thumbnail, homepage, wiki} = data;
 
   let imageClassName = 'randomchar__img';
 

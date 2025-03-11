@@ -8,13 +8,31 @@ import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
+const setContent = (process, Component, newItemLoading) => {
+  // логика этого компонента отличается от других, поэтому здесь отдельная функция представления контента а не импортированная из utils
+
+  switch (process) {
+    case 'waiting':
+      return <Spinner />;
+    // break;  // если в case есть return то break не обязателен, код дальше по кейсам не пойдет
+    case 'loading':
+      return newItemLoading ? <Component /> : <Spinner />; // если процесс и это дозагрузка персонажей то рендерим просто компонент, если это не дозагрузка новых персонажей то спиннер
+    case 'confirmed':
+      return <Component />;
+    case 'error':
+      return <ErrorMessage />;
+    default:
+      throw new Error('Unexpected process state');
+  }
+};
+
 const ComicsList = () => {
   const [comicsList, setComicsList] = useState([]);
   const [newItemLoading, setNewItemLoading] = useState(false);
   const [offset, setOffset] = useState(0);
   const [comicsEnded, setComicsEnded] = useState(false);
 
-  const {loading, error, getAllComics} = useMarvelService();
+  const {loading, error, process, setProcess, getAllComics} = useMarvelService();
 
   useEffect(() => {
     onRequest(offset, true);
@@ -22,7 +40,9 @@ const ComicsList = () => {
 
   const onRequest = (offset, initial) => {
     initial ? setNewItemLoading(false) : setNewItemLoading(true);
-    getAllComics(offset).then(onComicsListLoaded);
+    getAllComics(offset)
+      .then(onComicsListLoaded)
+      .then(() => setProcess('confirmed'));
   };
 
   const onComicsListLoaded = async newComicsList => {
@@ -32,15 +52,7 @@ const ComicsList = () => {
       ended = true;
     }
 
-    // задержка чтобы каждый перс анимировался поочередно
-    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-    for (let comic of newComicsList) {
-      await delay(200);
-      setComicsList(comicsList => [...comicsList, comic]); // функция delay будет вызывать задержку на каждой итерации цикла (добавление в стейт новых комиксов)
-    }
-
-    // setComicsList(comicsList => [...comicsList, ...newComicsList]);  // вариант бз цикла и задержки анимации
+    setComicsList(comicsList => [...comicsList, ...newComicsList]);
     setNewItemLoading(false);
     setOffset(offset => offset + 8);
     setComicsEnded(ended);
@@ -78,15 +90,13 @@ const ComicsList = () => {
     );
   }
 
-  const items = renderItems(comicsList);
-  const spinner = loading && !newItemLoading ? <Spinner /> : null;
-  const errorMessage = error ? <ErrorMessage /> : null;
+  // const items = renderItems(comicsList);
+  // const spinner = loading && !newItemLoading ? <Spinner /> : null;
+  // const errorMessage = error ? <ErrorMessage /> : null;
 
   return (
     <div className="comics__list">
-      {spinner}
-      {errorMessage}
-      {items}
+      {setContent(process, () => renderItems(comicsList), newItemLoading)}
       <button
         className="button button__main button__long"
         disabled={newItemLoading} //  если newItemLoading true кнопка блокируется

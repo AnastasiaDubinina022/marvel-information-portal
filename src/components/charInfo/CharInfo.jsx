@@ -5,14 +5,12 @@ import PropTypes from 'prop-types';
 import './charInfo.scss';
 
 import useMarvelService from '../../services/MarvelService';
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
-import Skeleton from '../skeleton/Skeleton';
+import setContent from '../../utils/setContent';
 
 const CharInfo = props => {
   const [char, setChar] = useState(null);
 
-  const {loading, error, getCharacter, clearError} = useMarvelService();
+  const {process, setProcess, getCharacter, clearError} = useMarvelService();
   const {charId} = props;
 
   useEffect(() => {
@@ -33,27 +31,40 @@ const CharInfo = props => {
     }
 
     clearError();
-    getCharacter(charId).then(onCharLoaded);
+    getCharacter(charId)
+      .then(onCharLoaded)
+      .then(() => setProcess('confirmed')); // вручную устанавливаем процесс подтверждено в стэйт http.hook, т.к. из-за асинхронности указать это прямо в http.hook как остальные процессы не можем, будет работать неправильно
   };
 
-  // skeleton = если что-то из состояний есть то ничего не рендерим, если ничего нет то вставляем компонент скелетон
-  const skeleton = char || loading || error ? null : <Skeleton />;
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(loading || error || !char) ? <View char={char} /> : null;
+  // const setContent = (process, char) => {
+  //   // если логика этой функции повторяется в др. клмпонентах её можно вынести в отдельный файл и импортировать по необходимости
+  //   // так же можно поместить внутрь http.hook но лучше так не делать т.к. жто уже не совсем относится к логике хука.
+  //   switch (process) {
+  //     case 'waiting':
+  //       return <Skeleton />;
+  //       // break;  // если в case есть return то break не обязателен, код дальше по кейсам не пойдет
+  //     case 'loading':
+  //       return <Spinner/>;
+  //     case 'confirmed':
+  //       return <View char={char} />;
+  //     case 'error':
+  //       return <ErrorMessage/>
+  //     default:
+  //       throw new Error('Unexpected process state');
+  //   }
+  // }
 
-  return (
-    <div className="char__info">
-      {skeleton}
-      {errorMessage}
-      {spinner}
-      {content}
-    </div>
-  );
+  // skeleton = если что-то из состояний есть то ничего не рендерим, если ничего нет то вставляем компонент скелетон
+  // const skeleton = char || loading || error ? null : <Skeleton />;
+  // const errorMessage = error ? <ErrorMessage /> : null;
+  // const spinner = loading ? <Spinner /> : null;
+  // const content = !(loading || error || !char) ? <View char={char} /> : null;
+
+  return <div className="char__info">{setContent(process, View, char)}</div>;
 };
 
-const View = ({char}) => {
-  const {name, description, thumbnail, homepage, wiki, comics} = char;
+const View = ({data}) => {
+  const {name, description, thumbnail, homepage, wiki, comics} = data;
 
   let imgStyle = {objectFit: 'cover'};
   if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
