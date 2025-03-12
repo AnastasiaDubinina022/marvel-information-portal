@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef, useMemo} from 'react';
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 import PropTypes from 'prop-types';
 
@@ -75,7 +75,7 @@ const CharList = props => {
       if (item) item.classList.remove('char__item_selected');
     }); // проверка что элеменнт существует т.к. рефы
 
-    if (itemRefs.current.id) {
+    if (itemRefs.current[id]) {
       itemRefs.current[id].classList.add('char__item_selected');
       itemRefs.current[id].focus();
     } // Теперь c проверками код не сломается, даже если itemRefs.current содержит null-значения.
@@ -135,9 +135,14 @@ const CharList = props => {
   // const errorMessage = error ? <ErrorMessage /> : null;
   // const content = !(loading || error) ? items : null;  // в отличие от классов здесь это условие не нужно, т.к. при каждом перерендере все переменные пересоздаются и с этой строкой все персы пропадают в момент дозагрузки  тк на какой-то момент сюда помещается null
 
+  const elements = useMemo(() => {
+    return setContent(process, () => renderItems(charList), newItemLoading);
+    // eslint-disable-next-line
+  }, [process]);
+
   return (
     <div className="char__list">
-      {setContent(process, () => renderItems(charList), newItemLoading)}
+      {elements}
       <button
         className="button button__main button__long"
         disabled={newItemLoading} //  если newItemLoading true кнопка блокируется

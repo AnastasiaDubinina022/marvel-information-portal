@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useCallback} from 'react';
 import {HelmetProvider, Helmet} from 'react-helmet-async';
 
 import RandomChar from '../randomChar/RandomChar';
@@ -12,9 +12,9 @@ import decoration from '../../resources/img/vision.png';
 const MainPage = () => {
   const [selectedChar, setChar] = useState(null);
 
-  const onCharSelected = id => {
+  const onCharSelected = useCallback(id => {
     setChar(id);
-  };
+  }, []); // Теперь функция onCharSelected не будет пересоздаваться при каждом ререндере MainPage, а CharList не будет перерендериваться без необходимости.
 
   return (
     <>

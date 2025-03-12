@@ -36,24 +36,6 @@ const CharInfo = props => {
       .then(() => setProcess('confirmed')); // вручную устанавливаем процесс подтверждено в стэйт http.hook, т.к. из-за асинхронности указать это прямо в http.hook как остальные процессы не можем, будет работать неправильно
   };
 
-  // const setContent = (process, char) => {
-  //   // если логика этой функции повторяется в др. клмпонентах её можно вынести в отдельный файл и импортировать по необходимости
-  //   // так же можно поместить внутрь http.hook но лучше так не делать т.к. жто уже не совсем относится к логике хука.
-  //   switch (process) {
-  //     case 'waiting':
-  //       return <Skeleton />;
-  //       // break;  // если в case есть return то break не обязателен, код дальше по кейсам не пойдет
-  //     case 'loading':
-  //       return <Spinner/>;
-  //     case 'confirmed':
-  //       return <View char={char} />;
-  //     case 'error':
-  //       return <ErrorMessage/>
-  //     default:
-  //       throw new Error('Unexpected process state');
-  //   }
-  // }
-
   // skeleton = если что-то из состояний есть то ничего не рендерим, если ничего нет то вставляем компонент скелетон
   // const skeleton = char || loading || error ? null : <Skeleton />;
   // const errorMessage = error ? <ErrorMessage /> : null;
