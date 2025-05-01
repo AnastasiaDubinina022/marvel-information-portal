@@ -49,9 +49,11 @@ const View = ({data}) => {
   const {name, description, thumbnail, homepage, wiki, comics} = data;
 
   let imgStyle = {objectFit: 'cover'};
-  if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
+  if (thumbnail === 'https://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' || 
+    thumbnail === 'https://i.annihil.us/u/prod/marvel/i/mg/f/60/4c002e0305708.gif') {
     imgStyle = {objectFit: 'fill'};
   }
+ 
 
   return (
     <>

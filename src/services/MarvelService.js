@@ -1,4 +1,5 @@
 import {useHttp} from '../hooks/http.hook';
+import upgradeToHttps from '../utils/upgradeToHttps';
 
 const useMarvelService = () => {
   const {process, setProcess, request, clearError} = useHttp(); // вытаскиваем сущности функционала из объекта useHttp
@@ -19,7 +20,7 @@ const useMarvelService = () => {
 
     if (!result) {
       console.warn(`⚠ Персонаж с ID ${id} не найден, показываем заглушку`);
-      return {name: 'Unknown Character', description: 'No data available'};
+      return {name: 'Unknown Character', description: 'No data available', thumbnail: 'https://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'};
     }
 
     // ретерним уже трансформированные, только нужные нам данные
@@ -33,7 +34,7 @@ const useMarvelService = () => {
       description: char.description
         ? `${char.description.slice(0, 200)}...`
         : 'There is no description for this character.',
-      thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
+      thumbnail: upgradeToHttps(char.thumbnail.path + '.' + char.thumbnail.extension),  
       id: char.id,
       homepage: char.urls[0].url,
       wiki: char.urls[1].url,
@@ -64,7 +65,7 @@ const useMarvelService = () => {
       pageCount: comics.pageCount
         ? `${comics.pageCount} h.`
         : 'No information about the number of pages',
-      thumbnail: comics.thumbnail.path + '.' + comics.thumbnail.extension,
+      thumbnail: upgradeToHttps(comics.thumbnail.path + '.' + comics.thumbnail.extension),
       language: comics.textObjects.language || 'en-us',
       url: comics.urls[0].url,
     };

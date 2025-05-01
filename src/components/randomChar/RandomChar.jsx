@@ -84,8 +84,9 @@ const View = ({data}) => {
 
   let imageClassName = 'randomchar__img';
 
-  if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
-    imageClassName += ' object-fit-contain';
+  if (thumbnail === 'https://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' || 
+    thumbnail === 'https://i.annihil.us/u/prod/marvel/i/mg/f/60/4c002e0305708.gif') {
+    imageClassName += ' object-fit-fill';
   }
 
   return (
