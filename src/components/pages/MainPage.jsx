@@ -14,7 +14,7 @@ const MainPage = () => {
 
   const onCharSelected = useCallback(id => {
     setChar(id);
-  }, []); // Теперь функция onCharSelected не будет пересоздаваться при каждом ререндере MainPage, а CharList не будет перерендериваться без необходимости.
+  }, []); 
 
   return (
     <>

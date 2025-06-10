@@ -1,32 +1,32 @@
 import {useState, useCallback} from 'react';
 
 export const useHttp = () => {
-  const [process, setProcess] = useState('waiting'); // создаем состояние для конечного автомата (стэйт машины)
+  const [process, setProcess] = useState('waiting'); 
 
-  // делаем зарос и помещаем в request
-  // здесь передаем аргументы как для пост-запроса, чтобы уметь делать универсальные запросы
+  
+  
   const request = useCallback(
     async (url, method = 'GET', body = null, headers = {'Content-type': 'application/json'}) => {
       setProcess('loading');
 
-      // этот метод будет только отправлять запрос и не будет его обрабатывать при помощи then/catch, поэтому чтобы была возможность выдавать ошибку используем try/catch
+      
       try {
-        const response = await fetch(url, {method, body, headers}); // получаем ответ сервера в response
+        const response = await fetch(url, {method, body, headers}); 
 
-        // проверяем ответ, если он не ОК то выбрасываем ошибку для блока catch
+        
         if (!response.ok) {
           throw new Error(`Could not fetch ${url}, status: ${response.status}`);
         }
 
-        // .json() считывает тело ответа сервера в формате JSON и возвращает его в виде JavaScript-объекта
-        const data = await response.json(); // в дату помещаем js объект преобразовыннй из JSON-ответа сервера, await ждет завершения обработки
+        
+        const data = await response.json(); 
 
-        return data; // возвращаем данные из метода request
+        return data; 
       } catch (e) {
         setProcess('error');
-        // throw e; // из catch выкидываем ошибку - будет появляться модалка с красными ошибками
-        console.warn('Ошибка запроса', e.message); // Логируем ошибку, но не прерываем выполнение
-        return null; // Возвращаем null вместо выброса ошибки
+        
+        console.warn('Ошибка запроса', e.message); 
+        return null; 
       }
     },
     []
@@ -34,12 +34,12 @@ export const useHttp = () => {
 
   const clearError = useCallback(() => {
     setProcess('loading');
-  }, []); // функция по очистке ошибок (наглядны пример был в рандомЧар)
+  }, []); 
 
-  return {process, setProcess, request, clearError}; // возвращаем из хука объект с его функционалом дл универсального использования где угодно
-}; // этот хук позволяет нам отправлять любые запросы, обрабатывать результаты и сохранять локальное состояние.
+  return {process, setProcess, request, clearError}; 
+}; 
 
-// далее стоит задача связать этот универсальный хук с нашим уже готовым марвелСервисом, который отправляет запросы на опред. адреса и трансформирует данные
-// превратим марвелСервис в хук, который будет использовать внутри себя готовый функционал нашего useHttp, но при этом оставим его в
-// папке сервисов и не будем менять название, т.к. это уже не базовая универсальная операция, а специализированная, которая настроена
-// на работу с конкретным API (marvelAPI).
+
+
+
+

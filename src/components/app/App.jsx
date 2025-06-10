@@ -4,13 +4,13 @@ import {AnimatePresence, motion} from 'framer-motion';
 
 import AppHeader from '../appHeader/AppHeader';
 import Spinner from '../spinner/Spinner';
-// import SinglePage from '../pages/SinglePage';
-// import SingleCharacterLayout from '../pages/singleCharacterLayuot/SingleCharacterLayout';
-// import SingleComicLayout from '../pages/singleComicLayout/SingleComicLayout';
+
+
+
 
 import './app.scss';
 
-// 0,99 Mb
+
 const Page404 = lazy(() => import('../pages/404'));
 const MainPage = lazy(() => import('../pages/MainPage'));
 const ComicsPage = lazy(() => import('../pages/ComicsPage'));
@@ -21,12 +21,12 @@ const SingleCharacterLayout = lazy(
 );
 
 const AnimatedRoutes = () => {
-  const location = useLocation(); // получаем текущий маршрут - объект location, содержащий информацию о текущем URL (ниже используем location.pathname, чтобы отслеживать изменения маршрута)
+  const location = useLocation(); 
 
   return (
-    //** Suspense компонент-обертка для элементов lazy, fallback - комп.который будем показывать пока идет подгрузка компонентов в Suspense */}
+    
     <Suspense fallback={<Spinner />}>
-      {/** компонент framer motion */}
+      {}
       <AnimatePresence mode="wait">
         <Routes
           location={location}
@@ -77,7 +77,7 @@ const AnimatedRoutes = () => {
             }
           />
           <Route
-            path="/comics/:id" // динамическое формирование пути (:comicId - ключ называем как хотим)
+            path="/comics/:id" 
             element={
               <motion.div
                 initial={{opacity: 0, x: -100}}

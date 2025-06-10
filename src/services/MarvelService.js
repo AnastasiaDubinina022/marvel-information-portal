@@ -1,34 +1,35 @@
 import {useHttp} from '../hooks/http.hook';
 import upgradeToHttps from '../utils/upgradeToHttps';
 
-const useMarvelService = () => {
-  const {process, setProcess, request, clearError} = useHttp(); // вытаскиваем сущности функционала из объекта useHttp
+// Alternative API base URL and key if if the main api does not work
+// const _apiBase = 'https://marvel-server-zeta.vercel.app/'; 
+// const _apiKey = 'd4eecb0c66dedbfae4eab45d312fc1df';
 
-  const _apiBase = 'https://gateway.marvel.com:443/v1/public/'; // _ говорит другим программистам что эти данные нельзя менять
+const useMarvelService = () => {
+  const {process, setProcess, request, clearError} = useHttp(); 
+
+  const _apiBase = 'https://gateway.marvel.com:443/v1/public/'; 
   const _apiKey = 'apikey=48016fbc64705610f2040226da4655f7';
   const _baseOffSet = 210;
 
-  // делаем функцию асинхронной, поскольку для создания const result нужно дождаться ответа запроса
   const getAllCharacters = async (offset = _baseOffSet) => {
-    const result = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`); // сюда приходит ответ от сервера с массивом больших объектов персонажей
+    const result = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
 
-    return result.data.results.map(char => _transformCharacter(char)); // получаем массив уже трансформированных объектов
+    return result.data.results.map(char => _transformCharacter(char)); 
   };
 
   const getCharacter = async id => {
-    const result = await request(`${_apiBase}characters/${id}?${_apiKey}`); // сюда помещаем ответ от сервера с большим объектом данных
+    const result = await request(`${_apiBase}characters/${id}?${_apiKey}`); 
 
     if (!result) {
       console.warn(`⚠ Персонаж с ID ${id} не найден, показываем заглушку`);
       return {name: 'Unknown Character', description: 'No data available', thumbnail: 'https://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'};
     }
 
-    // ретерним уже трансформированные, только нужные нам данные
-    return _transformCharacter(result.data.results[0]); // (объект персонажа)
+    return _transformCharacter(result.data.results[0]); 
   };
 
   const _transformCharacter = char => {
-    // трансформация данных, превращает большой объект полученный с сервера в небольшой объект только с нужными нам данными
     return {
       name: char.name,
       description: char.description
@@ -80,7 +81,6 @@ const useMarvelService = () => {
     return _transformCharacter(result.data.results[0]);
   };
 
-  // поскольку это кастомный хук из него мы можем вернуть необходимые сущности для дальнейшего использования в других компонентах
   return {
     process,
     setProcess,

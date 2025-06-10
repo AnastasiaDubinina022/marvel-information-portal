@@ -9,14 +9,14 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const setContent = (process, Component, newItemLoading) => {
-  // логика этого компонента отличается от других, поэтому здесь отдельная функция представления контента а не импортированная из utils
+  
 
   switch (process) {
     case 'waiting':
       return <Spinner />;
-    // break;  // если в case есть return то break не обязателен, код дальше по кейсам не пойдет
+    
     case 'loading':
-      return newItemLoading ? <Component /> : <Spinner />; // если процесс и это дозагрузка персонажей то рендерим просто компонент, если это не дозагрузка новых персонажей то спиннер
+      return newItemLoading ? <Component /> : <Spinner />; 
     case 'confirmed':
       return <Component />;
     case 'error':
@@ -68,7 +68,7 @@ const ComicsList = () => {
           <li
             className="comics__item"
             key={i}>
-            {/** динамическое формирование пути */}
+            {}
             <Link to={`/comics/${item.id}`}>
               <img
                 src={item.thumbnail}
@@ -90,18 +90,18 @@ const ComicsList = () => {
     );
   }
 
-  // const items = renderItems(comicsList);
-  // const spinner = loading && !newItemLoading ? <Spinner /> : null;
-  // const errorMessage = error ? <ErrorMessage /> : null;
+  
+  
+  
 
   return (
     <div className="comics__list">
       {setContent(process, () => renderItems(comicsList), newItemLoading)}
       <button
         className="button button__main button__long"
-        disabled={newItemLoading} //  если newItemLoading true кнопка блокируется
-        style={{display: comicsEnded ? 'none' : 'block'}} // если комиксы закончились скрываем кнопку
-        onClick={() => onRequest(offset)} // колбэк обязателен, иначе бесконечный цикл запросов руинит приложение (запросы отправляются до того как компонент смонтирован)
+        disabled={newItemLoading} 
+        style={{display: comicsEnded ? 'none' : 'block'}} 
+        onClick={() => onRequest(offset)} 
       >
         <div className="inner">load more</div>
       </button>

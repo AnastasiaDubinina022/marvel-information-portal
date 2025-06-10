@@ -49,13 +49,13 @@
   }
 }
 
-/* char animation using react-transition-group */
+
 .char__item-enter {
   opacity: 0;
 }
 .char__item-enter-active {
   opacity: 1;
-  // visibility: visible;
+  
   transition: all 500ms ease-in;
 }
 
@@ -64,6 +64,6 @@
 }
 .char__item-exit-active {
   opacity: 0;
-  // visibility: hidden;
+  
   transition: all 500ms ease;
 }

@@ -9,7 +9,7 @@ import setContent from '../../utils/setContent';
 const RandomChar = () => {
   const [char, setChar] = useState({});
 
-  const {process, setProcess, getCharacter, clearError} = useMarvelService(); // вытаскиваем нужные сущности из вызова хука useMarvelService
+  const {process, setProcess, getCharacter, clearError} = useMarvelService(); 
 
   useEffect(() => {
     updateChar();
@@ -22,34 +22,34 @@ const RandomChar = () => {
 
   const onCharLoaded = char => {
     setChar(char);
-    // setLoading(false);  // состояния загрузки и ошибки теперь контролируются из хука useHttp
+    
   };
 
-  // методы onCharLoading и onError больше не нужны, т.к. состояния загрузки и ошибки теперь контролируются из хука useHttp
-  // const onCharLoading = () => {
-  //   setLoading(true);
-  //   setError(false);
-  //   updateChar();
-  // };
+  
+  
+  
+  
+  
+  
 
-  // const onError = () => {
-  //   setLoading(false);
-  //   setError(true);
-  // };
+  
+  
+  
+  
 
   const updateChar = () => {
     clearError();
 
-    const id = Math.floor(Math.random() * (1011500 - 1010900) + 1010900); // диапазон айдишников в базе и выбор случайного
-    getCharacter(id) // из функции getCharacter мы получаем объект с уже трансформированными данными и устанавливаем его в стэйт
-      .then(onCharLoaded) // в .then приходит объект и автоматически подставляется аргументом в указанную ссылочную функцию
+    const id = Math.floor(Math.random() * (1011500 - 1010900) + 1010900); 
+    getCharacter(id) 
+      .then(onCharLoaded) 
       .then(() => setProcess('confirmed'));
-    // .catch(onError);  // блок catch теперь здесь не нужен, т.к. ошибки обрабатываются в хуке useHttp
+    
   };
 
-  // const errorMessage = error ? <ErrorMessage /> : null; // выносим сюда сложную логику условного рендеринга
-  // const spinner = loading ? <Spinner /> : null;
-  // const content = !(loading || error) ? <View char={char} /> : null;
+  
+  
+  
 
   return (
     <div className="randomchar">
@@ -77,8 +77,8 @@ const RandomChar = () => {
   );
 };
 
-// рендерящий компонент, отвечающий только за отображeние, не содержащий никакой логики (вьюшка, вью), только принимает данные и отображает.
-// а все запросы, логика и тд. выше в основном компоненте
+
+
 const View = ({data}) => {
   const {name, description, thumbnail, homepage, wiki} = data;
 

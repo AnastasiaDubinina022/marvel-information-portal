@@ -7,16 +7,16 @@ const SingleComicLayout = ({data}) => {
   const {title, description, price, pageCount, thumbnail, language} = data;
   const navigate = useNavigate();
 
-  // эта проверка не работает на локалхост
-  // const siteOrigin = window.location.origin;  // домен текущего сайта
+  
+  
 
-  // const handleGoBack = () => {
-  //   if (document.referrer.startsWith(siteOrigin)) {  // Возвращаем назад только если реферер с нашего сайта
-  //     navigate(-1);
-  //   } else {            // Иначе ведём на главную
-  //     navigate('/');
-  //   }
-  // }
+  
+  
+  
+  
+  
+  
+  
 
   return (
     <HelmetProvider>
@@ -42,7 +42,7 @@ const SingleComicLayout = ({data}) => {
         </div>
         <button
           className="single-comic__back"
-          // onClick={handleGoBack}
+          
           onClick={() => navigate(-1)}>
           Back to all
         </button>

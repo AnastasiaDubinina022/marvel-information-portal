@@ -28,7 +28,7 @@ const SingleCharacterLayout = ({data}) => {
         </div>
         <button
           className="single-comic__back"
-          // onClick={handleGoBack}
+          
           onClick={() => navigate(-1)}>
           Back
         </button>

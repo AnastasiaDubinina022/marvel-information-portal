@@ -33,14 +33,8 @@ const CharInfo = props => {
     clearError();
     getCharacter(charId)
       .then(onCharLoaded)
-      .then(() => setProcess('confirmed')); // вручную устанавливаем процесс подтверждено в стэйт http.hook, т.к. из-за асинхронности указать это прямо в http.hook как остальные процессы не можем, будет работать неправильно
+      .then(() => setProcess('confirmed')); 
   };
-
-  // skeleton = если что-то из состояний есть то ничего не рендерим, если ничего нет то вставляем компонент скелетон
-  // const skeleton = char || loading || error ? null : <Skeleton />;
-  // const errorMessage = error ? <ErrorMessage /> : null;
-  // const spinner = loading ? <Spinner /> : null;
-  // const content = !(loading || error || !char) ? <View char={char} /> : null;
 
   return <div className="char__info">{setContent(process, View, char)}</div>;
 };
@@ -87,13 +81,12 @@ const View = ({data}) => {
         )}
         {comics
           .map((item, i) => {
-            const comicId = `${item.resourceURI.substring(43)}`; // строка из массива данных comics
+            const comicId = `${item.resourceURI.substring(43)}`; 
 
             return (
               <li
                 key={i}
                 className="char__comics-item">
-                {/** динамическое формирование пути */}
                 <Link to={`/comics/${comicId}`}>{item.name}</Link>
               </li>
             );
@@ -105,9 +98,9 @@ const View = ({data}) => {
 };
 
 CharInfo.propTypes = {
-  charId: PropTypes.number, // пропс charId должен соответствовать типу number
+  charId: PropTypes.number, 
 
-  // charId: PropTypes.string  // получаем в консоль предупреждение Warning: Failed prop type: Invalid prop `charId` of type `number` supplied to `CharInfo`, expected `string`.
+ 
 };
 
 export default CharInfo;
